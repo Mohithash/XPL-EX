@@ -189,19 +189,14 @@ public class OptimizedSettingGroupAdapter
 
             final int id = view.getId();
             final Context context = view.getContext();
-            switch (id) {
-                case R.id.tvSettingGroupName:
-                case R.id.ivExpanderSettingGroup:
-                case R.id.cvSettingGroup:
-                    handleExpandClickForGroup(currentItem);
-                    break;
-                case R.id.ivActionNeeded:
-                    MessageDialog.create()
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setName(context.getString(R.string.message_warning_hooks_title))
-                            .setMessage(context.getString(R.string.message_warning_hooks_message))
-                            .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
-                    break;
+            if (id == R.id.tvSettingGroupName || id == R.id.ivExpanderSettingGroup || id == R.id.cvSettingGroup) {
+                handleExpandClickForGroup(currentItem);
+            } else if (id == R.id.ivActionNeeded) {
+                MessageDialog.create()
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setName(context.getString(R.string.message_warning_hooks_title))
+                        .setMessage(context.getString(R.string.message_warning_hooks_message))
+                        .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
             }
         }
 
@@ -212,13 +207,10 @@ public class OptimizedSettingGroupAdapter
             if(res != null) {
                 int id = view.getId();
                 int resId = 0;
-                switch (id) {
-                    case R.id.ivActionNeeded:
-                        resId = R.string.msg_hint_warning_save;
-                        break;
-                    case R.id.tvStatsCount:
-                        resId = R.string.msg_hint_settings_stat;
-                        break;
+                if (id == R.id.ivActionNeeded) {
+                    resId = R.string.msg_hint_warning_save;
+                } else if (id == R.id.tvStatsCount) {
+                    resId = R.string.msg_hint_settings_stat;
                 }
 
                 if(resId > 0)

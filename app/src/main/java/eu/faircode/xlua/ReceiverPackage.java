@@ -19,7 +19,6 @@
 
 package eu.faircode.xlua;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -87,10 +86,9 @@ public class ReceiverPackage extends BroadcastReceiver {
                         builder.setVisibility(Notification.VISIBILITY_SECRET);
 
                         // Main
-                        int flags = (Build.VERSION.SDK_INT > Build.VERSION_CODES.R ? 0x04000000 : 0);
                         Intent main = ctx.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
                         main.putExtra(ActivityMain.EXTRA_SEARCH_PACKAGE, packageName);
-                        @SuppressLint("WrongConstant") PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, flags);
+                        PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, PendingIntent.FLAG_IMMUTABLE);
                         builder.setContentIntent(pi);
 
                         builder.setAutoCancel(true);

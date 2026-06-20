@@ -235,47 +235,66 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         XposedBridge.hookAllMethods(clsAM, "systemReady", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    XposedBridge.log(TAG + " Preparing system");
-                    Context context = getContext(param.thisObject);
-                    GetBridgeVersionCommand.init();
-                    hookPackage(lpparam, Process.myUid(), context);
-                } catch (Throwable ex) {
-                    Log.e(TAG, Log.getStackTraceString(ex));
-                    XposedBridge.log(ex);
-                }
+                // ActivityManagerService.systemReady() is a single, boot-critical call that
+                // many other system_server subsystems synchronize against. hookPackage() does
+                // IPC + SQLite + reflection + Lua compilation, which is too heavy to run
+                // synchronously on this path - it previously blocked the real systemReady()
+                // call from proceeding, which destabilized system_server during boot.
+                final Object thisObject = param.thisObject;
+                new Thread(() -> {
+                    try {
+                        XposedBridge.log(TAG + " Preparing system");
+                        Context context = getContext(thisObject);
+                        GetBridgeVersionCommand.init();
+                        hookPackage(lpparam, Process.myUid(), context);
+                    } catch (Throwable ex) {
+                        Log.e(TAG, Log.getStackTraceString(ex));
+                        XposedBridge.log(ex);
+                    }
+                }, "XLua-SystemReady-Before").start();
             }
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    XposedBridge.log(TAG + " System ready");
-                    Context context = getContext(param.thisObject);
+                // Same rationale as beforeHookedMethod: PackageManager/UserManagerService
+                // reflection and broadcast receiver registration must not block the caller
+                // of systemReady() during boot.
+                final Object thisObject = param.thisObject;
+                new Thread(() -> {
+                    try {
+                        XposedBridge.log(TAG + " System ready");
+                        Context context = getContext(thisObject);
 
 
-                    // Store current module version
-                    PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-                    version = pi.versionCode;
+                        // Store current module version
+                        PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
+                        version = pi.versionCode;
 
-                    // public static UserManagerService getInstance()
-                    Class<?> clsUM = Class.forName("com.android.server.pm.UserManagerService", false, param.thisObject.getClass().getClassLoader());
-                    Object um = clsUM.getDeclaredMethod("getInstance").invoke(null);
-                    //  public int[] getUserIds()
-                    int[] userids = (int[]) um.getClass().getDeclaredMethod("getUserIds").invoke(um);
+                        // public static UserManagerService getInstance()
+                        Class<?> clsUM = Class.forName("com.android.server.pm.UserManagerService", false, thisObject.getClass().getClassLoader());
+                        Object um = clsUM.getDeclaredMethod("getInstance").invoke(null);
+                        //  public int[] getUserIds()
+                        int[] userids = (int[]) um.getClass().getDeclaredMethod("getUserIds").invoke(um);
 
-                    // Listen for package changes
-                    for (int userid : userids) {
-                        //Log.i(TAG, "Registering package listener user=" + userid);
-                        IntentFilter ifPackageAdd = new IntentFilter();
-                        ifPackageAdd.addAction(Intent.ACTION_PACKAGE_ADDED);
-                        ifPackageAdd.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
-                        ifPackageAdd.addDataScheme("package");
-                        XUtil.createContextForUser(context, userid).registerReceiver(new ReceiverPackage(), ifPackageAdd);
+                        // Listen for package changes
+                        for (int userid : userids) {
+                            //Log.i(TAG, "Registering package listener user=" + userid);
+                            IntentFilter ifPackageAdd = new IntentFilter();
+                            ifPackageAdd.addAction(Intent.ACTION_PACKAGE_ADDED);
+                            ifPackageAdd.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
+                            ifPackageAdd.addDataScheme("package");
+                            Context userContext = XUtil.createContextForUser(context, userid);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                userContext.registerReceiver(new ReceiverPackage(), ifPackageAdd, Context.RECEIVER_EXPORTED);
+                            } else {
+                                userContext.registerReceiver(new ReceiverPackage(), ifPackageAdd);
+                            }
+                        }
+                    } catch (Throwable ex) {
+                        Log.e(TAG, Log.getStackTraceString(ex));
+                        XposedBridge.log(ex);
                     }
-                } catch (Throwable ex) {
-                    Log.e(TAG, Log.getStackTraceString(ex));
-                    XposedBridge.log(ex);
-                }
+                }, "XLua-SystemReady-After").start();
             }
 
             @NonNull

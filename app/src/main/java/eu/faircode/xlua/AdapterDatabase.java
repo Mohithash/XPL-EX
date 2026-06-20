@@ -47,12 +47,6 @@ public class AdapterDatabase extends RecyclerView.Adapter<AdapterDatabase.ViewHo
             String name = prop.getName();
 
             Log.i(TAG, "onClick=" + id + "==" + name);
-
-            switch (view.getId()) {
-                case R.id.itemViewDatabase:
-
-                    break;
-            }
         }
     }
 

@@ -95,12 +95,11 @@ public class AdapterProperty  extends RecyclerView.Adapter<AdapterProperty.ViewH
                 int adapterPosition = getAdapterPosition();
                 MockPropSetting setting = filtered.get(adapterPosition);
                 int valueNeeded = MockPropPacket.PROP_NULL;
-                if(isChecked)
-                    switch (code) {
-                        case R.id.cbPropSkip: valueNeeded = MockPropPacket.PROP_SKIP; break;
-                        case R.id.cbPropHide: valueNeeded = MockPropPacket.PROP_HIDE; break;
-                        case R.id.cbPropForce: valueNeeded = MockPropPacket.PROP_FORCE; break;
-                    }
+                if(isChecked) {
+                    if (code == R.id.cbPropSkip) valueNeeded = MockPropPacket.PROP_SKIP;
+                    else if (code == R.id.cbPropHide) valueNeeded = MockPropPacket.PROP_HIDE;
+                    else if (code == R.id.cbPropForce) valueNeeded = MockPropPacket.PROP_FORCE;
+                }
 
                 propertiesQue.sendPropertySetting(cButton.getContext(), setting, adapterPosition, valueNeeded, false, this);
             }catch (Exception e) { XLog.e("onCheckedChanged Failed: code=" + code + " isChecked" + isChecked, e, true); }
@@ -112,19 +111,14 @@ public class AdapterProperty  extends RecyclerView.Adapter<AdapterProperty.ViewH
             int code = v.getId();
             XLog.i("onLongClick: code=" + code);
             try {
-                switch (code) {
-                    case R.id.cbPropSkip:
-                        Snackbar.make(v, R.string.check_prop_skip_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.cbPropHide:
-                        Snackbar.make(v, R.string.check_prop_hide_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.cbPropForce:
-                        Snackbar.make(v, R.string.check_prop_force_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtPropSettingDelete:
-                        Snackbar.make(v, R.string.menu_property_setting_delete_hint, Snackbar.LENGTH_LONG).show();
-                        break;
+                if (code == R.id.cbPropSkip) {
+                    Snackbar.make(v, R.string.check_prop_skip_hint, Snackbar.LENGTH_LONG).show();
+                } else if (code == R.id.cbPropHide) {
+                    Snackbar.make(v, R.string.check_prop_hide_hint, Snackbar.LENGTH_LONG).show();
+                } else if (code == R.id.cbPropForce) {
+                    Snackbar.make(v, R.string.check_prop_force_hint, Snackbar.LENGTH_LONG).show();
+                } else if (code == R.id.ivBtPropSettingDelete) {
+                    Snackbar.make(v, R.string.menu_property_setting_delete_hint, Snackbar.LENGTH_LONG).show();
                 }
             }catch (Exception e) { XLog.e("onLongClick Failed: code=" + code, e, true); }
             return true;
@@ -138,15 +132,13 @@ public class AdapterProperty  extends RecyclerView.Adapter<AdapterProperty.ViewH
             try {
                 int position = getAdapterPosition();
                 MockPropSetting setting = filtered.get(position);
-                switch (code) {
-                    case R.id.ivBtPropSettingDelete:
-                        new PropertyDeleteDialog()
-                                .addAdapterPosition(position)
-                                .addSetting(setting)
-                                .addCallback(this)
-                                .addPropertyQue(propertiesQue)
-                                .show(fragmentLoader.getManager(), v.getContext().getString(R.string.title_delete_property));
-                        break;
+                if (code == R.id.ivBtPropSettingDelete) {
+                    new PropertyDeleteDialog()
+                            .addAdapterPosition(position)
+                            .addSetting(setting)
+                            .addCallback(this)
+                            .addPropertyQue(propertiesQue)
+                            .show(fragmentLoader.getManager(), v.getContext().getString(R.string.title_delete_property));
                 }
             }catch (Exception e) { XLog.e("Failed to Invoke onClick: code=" + code, e, true);  }
         }

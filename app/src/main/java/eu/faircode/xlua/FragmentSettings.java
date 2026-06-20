@@ -187,38 +187,26 @@ public class FragmentSettings
         int code = v.getId();
         if(DebugUtil.isDebug())
             Log.d(TAG, "onLongClick=" + code);
-        switch (code) {
-            case R.id.flSettingsButtonTwo:
-                Snackbar.make(v, R.string.menu_settings_randomize_hint, Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.flSettingsButtonThree:
-                Snackbar.make(v, R.string.menu_settings_add_hint, Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.flSettingsButtonFour:
-                Snackbar.make(v, R.string.menu_settings_save_hint, Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.flSettingsButtonFive:
-                Snackbar.make(v, R.string.menu_settings_delete_hint, Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.flSettingsButtonOne:
-                Snackbar.make(v, R.string.menu_settings_hint, Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.cbUseDefaultSettings:
-                Toast.makeText(getContext(), R.string.menu_settings_use_default_hint, Toast.LENGTH_LONG).show();
-                break;
-            case R.id.btSettingsResetAll:
-                Snackbar.make(main, getString(R.string.menu_settings_reset_hint), Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.btSettingsClearData:
-                Snackbar.make(main, getString(R.string.button_settings_reset_data_hint), Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.btSettingsSaveChecked:
-                Snackbar.make(main, getString(R.string.button_settings_save_checked_hint), Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.btSettingsExportToConfig:
-                Snackbar.make(main, getString(R.string.button_settings_export_to_config_hint), Snackbar.LENGTH_LONG).show();
-                break;
-
+        if (code == R.id.flSettingsButtonTwo) {
+            Snackbar.make(v, R.string.menu_settings_randomize_hint, Snackbar.LENGTH_SHORT).show();
+        } else if (code == R.id.flSettingsButtonThree) {
+            Snackbar.make(v, R.string.menu_settings_add_hint, Snackbar.LENGTH_SHORT).show();
+        } else if (code == R.id.flSettingsButtonFour) {
+            Snackbar.make(v, R.string.menu_settings_save_hint, Snackbar.LENGTH_SHORT).show();
+        } else if (code == R.id.flSettingsButtonFive) {
+            Snackbar.make(v, R.string.menu_settings_delete_hint, Snackbar.LENGTH_SHORT).show();
+        } else if (code == R.id.flSettingsButtonOne) {
+            Snackbar.make(v, R.string.menu_settings_hint, Snackbar.LENGTH_SHORT).show();
+        } else if (code == R.id.cbUseDefaultSettings) {
+            Toast.makeText(getContext(), R.string.menu_settings_use_default_hint, Toast.LENGTH_LONG).show();
+        } else if (code == R.id.btSettingsResetAll) {
+            Snackbar.make(main, getString(R.string.menu_settings_reset_hint), Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.btSettingsClearData) {
+            Snackbar.make(main, getString(R.string.button_settings_reset_data_hint), Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.btSettingsSaveChecked) {
+            Snackbar.make(main, getString(R.string.button_settings_save_checked_hint), Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.btSettingsExportToConfig) {
+            Snackbar.make(main, getString(R.string.button_settings_export_to_config_hint), Snackbar.LENGTH_LONG).show();
         }
 
         return true;
@@ -229,74 +217,60 @@ public class FragmentSettings
         int id = v.getId();
         if(DebugUtil.isDebug())
             Log.d(TAG, "onClick id=" + id);
-        switch (id) {
-            case R.id.btSettingsKillApp:
-                final XResult res = KillAppCommand.invokeEx(v.getContext(), application.getPackageName(), application.getUid());
-                Snackbar.make(v, res.getResultMessage(), Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.ivExpanderSettingsApp:
-                updateExpanded();
-                break;
-            case R.id.btSettingsToProperties:
-                Intent propsIntent = new Intent(v.getContext(), ActivityProperties.class);
-                propsIntent.putExtra("packageName", application.getPackageName());
-                v.getContext().startActivity(propsIntent);
-                break;
-            case R.id.btSettingsToConfigs:
-                Intent configIntent = new Intent(v.getContext(), ActivityConfig.class);
-                configIntent.putExtra("packageName", application.getPackageName());
-                v.getContext().startActivity(configIntent);
-                break;
-            case R.id.flSettingsButtonOne:
-                invokeFloatingActions();
-                break;
-            case R.id.flSettingsButtonTwo:
-                rvAdapter.randomizeAll(v.getContext());
-                break;
-            case R.id.flSettingsButtonThree:
-                new SettingAddDialogEx()
-                        .setCallback(this)
-                        .setQue(que)
-                        .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_add_dialog_setting_builder));
-                break;
-            case R.id.flSettingsButtonFour:
-                rvAdapter.saveAll(v.getContext());
-                break;
-            case R.id.flSettingsButtonFive:
-                rvAdapter.deleteSelected(v.getContext());
-                break;
-            case R.id.btSettingsResetAll:
-                new SettingsResetDialog()
-                        .setCallback(this)
-                        .setApplication(application)
-                        .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_settings_reset));
-                break;
-            case R.id.btSettingsClearData:
-                new ClearAppDataDialog()
-                        .setApplication(application)
-                        .show(getManager(), getString(R.string.title_delete_appdata));
-                break;
-            case R.id.btSettingsSaveChecked:
-                List<String> selected = new ArrayList<>();
-                for(LuaSettingExtended s : rvAdapter.getSettings())
-                    if(s.isEnabled())
-                        selected.add(s.getName());
+        if (id == R.id.btSettingsKillApp) {
+            final XResult res = KillAppCommand.invokeEx(v.getContext(), application.getPackageName(), application.getUid());
+            Snackbar.make(v, res.getResultMessage(), Snackbar.LENGTH_SHORT).show();
+        } else if (id == R.id.ivExpanderSettingsApp) {
+            updateExpanded();
+        } else if (id == R.id.btSettingsToProperties) {
+            Intent propsIntent = new Intent(v.getContext(), ActivityProperties.class);
+            propsIntent.putExtra("packageName", application.getPackageName());
+            v.getContext().startActivity(propsIntent);
+        } else if (id == R.id.btSettingsToConfigs) {
+            Intent configIntent = new Intent(v.getContext(), ActivityConfig.class);
+            configIntent.putExtra("packageName", application.getPackageName());
+            v.getContext().startActivity(configIntent);
+        } else if (id == R.id.flSettingsButtonOne) {
+            invokeFloatingActions();
+        } else if (id == R.id.flSettingsButtonTwo) {
+            rvAdapter.randomizeAll(v.getContext());
+        } else if (id == R.id.flSettingsButtonThree) {
+            new SettingAddDialogEx()
+                    .setCallback(this)
+                    .setQue(que)
+                    .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_add_dialog_setting_builder));
+        } else if (id == R.id.flSettingsButtonFour) {
+            rvAdapter.saveAll(v.getContext());
+        } else if (id == R.id.flSettingsButtonFive) {
+            rvAdapter.deleteSelected(v.getContext());
+        } else if (id == R.id.btSettingsResetAll) {
+            new SettingsResetDialog()
+                    .setCallback(this)
+                    .setApplication(application)
+                    .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_settings_reset));
+        } else if (id == R.id.btSettingsClearData) {
+            new ClearAppDataDialog()
+                    .setApplication(application)
+                    .show(getManager(), getString(R.string.title_delete_appdata));
+        } else if (id == R.id.btSettingsSaveChecked) {
+            List<String> selected = new ArrayList<>();
+            for(LuaSettingExtended s : rvAdapter.getSettings())
+                if(s.isEnabled())
+                    selected.add(s.getName());
 
-                if(!selected.isEmpty()) PrefUtil.setString(getContext(), LAST_CHECKED, Str.joinList(selected));
-                else PrefUtil.setString(getContext(), LAST_CHECKED, "");
-                break;
-            case R.id.btSettingsExportToConfig:
-                List<LuaSettingExtended> settings = rvAdapter.getSettingsEnable();
-                if(!settings.isEmpty()) {
-                    MockConfig config = new MockConfig();
-                    config.setName("test");
-                    config.setSettings(settings);
-                    new RenameDialogEx()
-                            .setConfig(config)
-                            .setCallback(this)
-                            .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_config_rename_config));
-                }
-                break;
+            if(!selected.isEmpty()) PrefUtil.setString(getContext(), LAST_CHECKED, Str.joinList(selected));
+            else PrefUtil.setString(getContext(), LAST_CHECKED, "");
+        } else if (id == R.id.btSettingsExportToConfig) {
+            List<LuaSettingExtended> settings = rvAdapter.getSettingsEnable();
+            if(!settings.isEmpty()) {
+                MockConfig config = new MockConfig();
+                config.setName("test");
+                config.setSettings(settings);
+                new RenameDialogEx()
+                        .setConfig(config)
+                        .setCallback(this)
+                        .show(Objects.requireNonNull(getFragmentManager()), getString(R.string.title_config_rename_config));
+            }
         }
 
     }

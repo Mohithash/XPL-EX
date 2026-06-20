@@ -152,79 +152,67 @@ public class OptimizedContainerAdapter
                 return;
 
             int id = view.getId();
-            switch (id) {
-                case R.id.tvSettingContainerNameFull:
-                case R.id.tvSettingContainerNameNice:
-                case R.id.ivExpanderSettingContainer:
-                    updateExpandedStateForContainer(sharedRegistry.toggleExpanded(SharedRegistry.STATE_TAG_CONTAINERS, currentItem.getContainerName()));
-                    break;
-                case R.id.tvHookCount:
-                case R.id.ivBtHookMenu:
-                    if(sharedRegistry.asSettingShared().getAssignmentInfo(
-                            currentItem, false, context).getCount() < 1) {
-                        Snackbar.make(view, view.getResources().getString(R.string.msg_error_no_hooks), Snackbar.LENGTH_LONG).show();
-                        return;
-                    }
+            if (id == R.id.tvSettingContainerNameFull || id == R.id.tvSettingContainerNameNice || id == R.id.ivExpanderSettingContainer) {
+                updateExpandedStateForContainer(sharedRegistry.toggleExpanded(SharedRegistry.STATE_TAG_CONTAINERS, currentItem.getContainerName()));
+            } else if (id == R.id.tvHookCount || id == R.id.ivBtHookMenu) {
+                if(sharedRegistry.asSettingShared().getAssignmentInfo(
+                        currentItem, false, context).getCount() < 1) {
+                    Snackbar.make(view, view.getResources().getString(R.string.msg_error_no_hooks), Snackbar.LENGTH_LONG).show();
+                    return;
+                }
 
-                    //ToDo: Try to use the "new" system of Getting Hooks on the Dialog as well
-                    if(!UiLog.ensureNotGlobal(view, userContext))
-                        HooksDialog.create()
-                                .set(userContext.appUid, userContext.appPackageName,  context, currentItem.getAllNames())
-                                .setDialogEvent(() -> updateHookCount(context, true, true))
-                                .show(manager.getFragmentMan(), res.getString(R.string.title_hooks_assign));
-                    break;
-                case R.id.ivBtSettingContainerSave:
-                    for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem)) {
-                        if(holder.isNotSaved()) {
-                            A_CODE code = PutSettingExCommand.call(view.getContext(), holder, userContext, userContext.isKill(), false);
-                            if(code == A_CODE.FAILED)
-                                Snackbar.make(view, res.getString(R.string.save_setting_error), Snackbar.LENGTH_LONG)
-                                        .show();
-                            else {
-                                holder.setValue(holder.getNewValue(), true);
-                                holder.setNameLabelColor(view.getContext());
-                                holder.notifyUpdate(sharedRegistry);
-                                Snackbar.make(view, res.getString(R.string.save_setting_success), Snackbar.LENGTH_LONG)
-                                        .show();
-                            }
+                //ToDo: Try to use the "new" system of Getting Hooks on the Dialog as well
+                if(!UiLog.ensureNotGlobal(view, userContext))
+                    HooksDialog.create()
+                            .set(userContext.appUid, userContext.appPackageName,  context, currentItem.getAllNames())
+                            .setDialogEvent(() -> updateHookCount(context, true, true))
+                            .show(manager.getFragmentMan(), res.getString(R.string.title_hooks_assign));
+            } else if (id == R.id.ivBtSettingContainerSave) {
+                for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem)) {
+                    if(holder.isNotSaved()) {
+                        A_CODE code = PutSettingExCommand.call(view.getContext(), holder, userContext, userContext.isKill(), false);
+                        if(code == A_CODE.FAILED)
+                            Snackbar.make(view, res.getString(R.string.save_setting_error), Snackbar.LENGTH_LONG)
+                                    .show();
+                        else {
+                            holder.setValue(holder.getNewValue(), true);
+                            holder.setNameLabelColor(view.getContext());
+                            holder.notifyUpdate(sharedRegistry);
+                            Snackbar.make(view, res.getString(R.string.save_setting_success), Snackbar.LENGTH_LONG)
+                                    .show();
                         }
                     }
-                    break;
-                case R.id.ivBtSettingContainerRandomize:
-                    RandomizerSessionContext ctx = new RandomizerSessionContext()
-                            .randomize(
-                                    manager.getAsFragment(),
-                                    settingShared.getSettingsForContainer(currentItem),
-                                    context,
-                                    sharedRegistry);
+                }
+            } else if (id == R.id.ivBtSettingContainerRandomize) {
+                RandomizerSessionContext ctx = new RandomizerSessionContext()
+                        .randomize(
+                                manager.getAsFragment(),
+                                settingShared.getSettingsForContainer(currentItem),
+                                context,
+                                sharedRegistry);
 
-                    Snackbar.make(view, res.getString(ctx.getRandomizedCount() == 0 ?
-                                    R.string.msg_error_randomizer_none :
-                                    R.string.msg_result_randomized), Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.ivBtSettingContainerReset:
-                    ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem), (o, i) -> o.reset(context, sharedRegistry.notifier));
-                    break;
-                case R.id.ivBtSettingContainerDelete:
-                    SettingDeleteDialog.create()
-                            .set(settingShared.getSettingsForContainer(currentItem), currentItem)
-                            .setNotifier(settingShared.notifier)
-                            .setApp(userContext)
-                            .setDialogEventFail((m) -> Snackbar.make(view, res.getString(R.string.msg_error_result_generic) + m, Snackbar.LENGTH_LONG).show())
-                            .setDialogEventFinish(() -> Snackbar.make(view, res.getString(R.string.msg_result_deleted), Snackbar.LENGTH_LONG).show())
-                                .show(manager.getFragmentMan(), res.getString(R.string.title_delete_action));
-                    break;
-
-                case R.id.ivBtWildcard:
-                    ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem), (o, i) -> {
-                        //Check if it has a Randomizer
-                        String newValue = PackageHookContext.RANDOM_VALUE;
-                        o.setNewValue(newValue);
-                        o.ensureUiUpdated(newValue);
-                        o.setNameLabelColor(context);
-                        o.notifyUpdate(settingShared.notifier);
-                    });
-                    break;
+                Snackbar.make(view, res.getString(ctx.getRandomizedCount() == 0 ?
+                                R.string.msg_error_randomizer_none :
+                                R.string.msg_result_randomized), Snackbar.LENGTH_LONG).show();
+            } else if (id == R.id.ivBtSettingContainerReset) {
+                ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem), (o, i) -> o.reset(context, sharedRegistry.notifier));
+            } else if (id == R.id.ivBtSettingContainerDelete) {
+                SettingDeleteDialog.create()
+                        .set(settingShared.getSettingsForContainer(currentItem), currentItem)
+                        .setNotifier(settingShared.notifier)
+                        .setApp(userContext)
+                        .setDialogEventFail((m) -> Snackbar.make(view, res.getString(R.string.msg_error_result_generic) + m, Snackbar.LENGTH_LONG).show())
+                        .setDialogEventFinish(() -> Snackbar.make(view, res.getString(R.string.msg_result_deleted), Snackbar.LENGTH_LONG).show())
+                            .show(manager.getFragmentMan(), res.getString(R.string.title_delete_action));
+            } else if (id == R.id.ivBtWildcard) {
+                ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem), (o, i) -> {
+                    //Check if it has a Randomizer
+                    String newValue = PackageHookContext.RANDOM_VALUE;
+                    o.setNewValue(newValue);
+                    o.ensureUiUpdated(newValue);
+                    o.setNameLabelColor(context);
+                    o.notifyUpdate(settingShared.notifier);
+                });
             }
         }
 
@@ -235,26 +223,18 @@ public class OptimizedContainerAdapter
             if(currentItem != null && res != null) {
                 int id = view.getId();
                 int resId = 0;
-                switch (id) {
-                    case R.id.tvHookCount:
-                    case R.id.ivBtHookMenu:
-                        resId = R.string.msg_hint_hook_control;
-                        break;
-                    case R.id.ivBtWildcard:
-                        resId = R.string.msg_hint_wild_card;
-                        break;
-                    case R.id.ivBtSettingContainerDelete:
-                        resId = R.string.msg_hint_delete_container;
-                        break;
-                    case R.id.ivBtSettingContainerRandomize:
-                        resId = R.string.msg_hint_randomize_container;
-                        break;
-                    case R.id.ivBtSettingContainerReset:
-                        resId = R.string.msg_hint_reset_container;
-                        break;
-                    case R.id.ivBtSettingContainerSave:
-                        resId = R.string.msg_hint_save_container;
-                        break;
+                if (id == R.id.tvHookCount || id == R.id.ivBtHookMenu) {
+                    resId = R.string.msg_hint_hook_control;
+                } else if (id == R.id.ivBtWildcard) {
+                    resId = R.string.msg_hint_wild_card;
+                } else if (id == R.id.ivBtSettingContainerDelete) {
+                    resId = R.string.msg_hint_delete_container;
+                } else if (id == R.id.ivBtSettingContainerRandomize) {
+                    resId = R.string.msg_hint_randomize_container;
+                } else if (id == R.id.ivBtSettingContainerReset) {
+                    resId = R.string.msg_hint_reset_container;
+                } else if (id == R.id.ivBtSettingContainerSave) {
+                    resId = R.string.msg_hint_save_container;
                 }
 
                 if(resId > 0)

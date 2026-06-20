@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="eu.faircode.xlua">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- https://developer.android.com/preview/privacy/package-visibility -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
 
     <application
-        android:requestLegacyExternalStorage="false"
-
-        android:name="ApplicationEx"
+        android:name=".ApplicationEx"
         android:allowBackup="false"
         android:appCategory="productivity"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -30,7 +30,7 @@
             android:value="@string/app_name" />
         <meta-data
             android:name="xposedminversion"
-            android:value="82" />
+            android:value="93" />
         <meta-data
             android:name="xposedscope"
             android:resource="@array/scopes" />
@@ -50,7 +50,7 @@
 
         <activity
             android:name=".ActivityHelp"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_help"
             android:launchMode="singleTop"
@@ -63,7 +63,7 @@
 
         <activity
             android:name=".x.ui.activities.HooksExActivity"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_hooks"
             android:launchMode="singleTop"
@@ -73,8 +73,30 @@
         </activity>
 
         <activity
+            android:name=".x.ui.activities.ActivityFingerprintProfiles"
+            android:exported="false"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/menu_fingerprint_profiles"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ActivityMain"
+            android:resizeableActivity="true">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".ActivityMain" />
+        </activity>
+
+        <activity
+            android:name=".x.ui.activities.ActivityPrivacyReport"
+            android:exported="false"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/menu_privacy_report"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ActivityMain"
+            android:resizeableActivity="true">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".ActivityMain" />
+        </activity>
+
+        <activity
             android:name=".ActivityProperties"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_props"
             android:launchMode="singleTop"
@@ -87,7 +109,7 @@
 
         <activity
             android:name=".ActivityAppControl"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_hooks"
             android:launchMode="singleTop"
@@ -101,7 +123,7 @@
 
         <activity
             android:name=".ActivitySettings"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_settings"
             android:launchMode="singleTop"
@@ -114,7 +136,7 @@
 
         <activity
             android:name=".x.ui.activities.SettingsExActivity"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_settings"
             android:launchMode="singleTop"
@@ -127,7 +149,7 @@
 
         <activity
             android:name=".ActivityConfig"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/menu_configs"
             android:launchMode="singleTop"
@@ -140,7 +162,7 @@
 
         <activity
             android:name=".ActivityDatabase"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -155,7 +177,7 @@
 
         <activity
             android:name=".ActivityCpu"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"

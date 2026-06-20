@@ -677,6 +677,19 @@ public class XParam extends XParamExtra {
     public StackTraceElement[] stackHasEvidence(StackTraceElement[] elements) { return Evidence.stack(elements); }
 
     @SuppressWarnings("unused")
+    public boolean isProcSelfPath(String path) { return Evidence.isProcSelfPath(path); }
+    @SuppressWarnings("unused")
+    public boolean isProcMapsLine(String line) { return Evidence.isProcMapsLine(line); }
+    @SuppressWarnings("unused")
+    public boolean isProcMountLine(String line) { return Evidence.isProcMountLine(line); }
+    @SuppressWarnings("unused")
+    public String spoofRootProperty(String propName) { return Evidence.spoofRootProperty(propName); }
+    @SuppressWarnings("unused")
+    public boolean isRootProperty(String propName) { return Evidence.isRootProperty(propName); }
+    @SuppressWarnings("unused")
+    public boolean isEmulatorProperty(String propName) { return Evidence.isEmulatorProperty(propName); }
+
+    @SuppressWarnings("unused")
     public String createFilledString(String s, String fillChar) { return Str.createFilledCopy(s, fillChar); }
 
     @SuppressWarnings("unused")

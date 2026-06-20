@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#AA3939</color>
-    <color name="colorPrimaryDark">#D94C4C</color>
-    <color name="colorAccent">#5FA8D3 </color>
-    <color name="colorUnsavedSetting">#D94C4C</color>
+    <color name="colorPrimary">#3949AB</color>
+    <color name="colorPrimaryDark">#283593</color>
+    <color name="colorAccent">#00BFA5</color>
+    <color name="colorUnsavedSetting">#FFA000</color>
+    <color name="colorReportException">#D32F2F</color>
 
 
     <!-- Light theme -->
@@ -17,7 +18,7 @@
     <color name="lightColorDividerBack">#D8CBCB</color>
 
     <!-- Light Theme Button Colors -->
-    <color name="lightColorPrimaryButton">#AA3939</color> <!-- Matches colorPrimary -->
+    <color name="lightColorPrimaryButton">#3949AB</color> <!-- Matches colorPrimary -->
     <color name="lightColorPrimaryButtonText">#FFFFFF</color> <!-- White text -->
 
     <color name="lightDisabledHook">#757575</color>
@@ -34,7 +35,7 @@
     <color name="darkColorDividerBack">#277F7F7F</color>
 
     <!-- Dark Theme Button Colors -->
-    <color name="darkColorPrimaryButton">#D94C4C</color> <!-- Matches colorPrimaryDark -->
+    <color name="darkColorPrimaryButton">#283593</color> <!-- Matches colorPrimaryDark -->
     <color name="darkColorPrimaryButtonText">#FFFFFF</color> <!-- White text -->
 
 

@@ -173,31 +173,26 @@ public class AdapterSetting extends RecyclerView.Adapter<AdapterSetting.ViewHold
                 Log.d(TAG, "onLongClick id=" + code);
 
             final LuaSettingExtended setting = filtered.get(getAdapterPosition());
-            switch (code) {
-                case R.id.ivBtRandomSettingValue:
-                    Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.ivBtSaveSettingSetting:
-                    Snackbar.make(v, R.string.menu_setting_save_hint, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.ivBtDeleteSetting:
-                    Snackbar.make(v, R.string.menu_setting_delete_hint, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.ivBtSettingReset:
-                    Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.cbSettingEnabled:
-                    String gId = setting.getGroupId();
-                    boolean isSelected = setting.isEnabled();
-                    Toast.makeText(v.getContext(), R.string.menu_setting_selecting_all_hint + gId, Toast.LENGTH_SHORT).show();
-                    unWire();
-                    for(LuaSettingExtended s : filtered) {
-                        if(s.getGroupId().equalsIgnoreCase(gId))
-                            s.setIsEnabled(isSelected);
-                    }
+            if (code == R.id.ivBtRandomSettingValue) {
+                Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
+            } else if (code == R.id.ivBtSaveSettingSetting) {
+                Snackbar.make(v, R.string.menu_setting_save_hint, Snackbar.LENGTH_LONG).show();
+            } else if (code == R.id.ivBtDeleteSetting) {
+                Snackbar.make(v, R.string.menu_setting_delete_hint, Snackbar.LENGTH_LONG).show();
+            } else if (code == R.id.ivBtSettingReset) {
+                Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
+            } else if (code == R.id.cbSettingEnabled) {
+                String gId = setting.getGroupId();
+                boolean isSelected = setting.isEnabled();
+                Toast.makeText(v.getContext(), R.string.menu_setting_selecting_all_hint + gId, Toast.LENGTH_SHORT).show();
+                unWire();
+                for(LuaSettingExtended s : filtered) {
+                    if(s.getGroupId().equalsIgnoreCase(gId))
+                        s.setIsEnabled(isSelected);
+                }
 
-                    notifyDataSetChanged();
-                    wire();
+                notifyDataSetChanged();
+                wire();
             }
 
             return true;
@@ -213,45 +208,38 @@ public class AdapterSetting extends RecyclerView.Adapter<AdapterSetting.ViewHold
             if(DebugUtil.isDebug())
                 Log.d(TAG, "onClick id=" + id + " selected=" + setting);
 
-            switch (id) {
-                case R.id.ivExpanderSettingsSetting:
-                case R.id.itemViewSetting:
-                    ViewUtil.internalUpdateExpanded(expanded, name);
-                    updateExpanded();
-                    break;
-                case R.id.ivBtRandomSettingValue:
-                    if(NARandomizer.isNA(setting.getRandomizer())) {
-                        new NoRandomDialog()
-                                .show(loaderFragment.getManager(), view.getResources().getString(R.string.title_no_random));
-                    }else {
-                        setting.randomizeValue(view.getContext());
-                        SettingUtil.initCardViewColor(view.getContext(), tvSettingName, cvSetting, setting);
-                    }
-                    break;
-                case R.id.ivBtSaveSettingSetting:
-                    settingsQue.updateSetting(
-                            view.getContext(),
-                            setting,
-                            pos,
-                            true,
-                            false,
-                            this);
-                    break;
-                case R.id.ivBtDeleteSetting:
-                    new SettingDeleteDialogEx()
-                            .setSetting(setting)
-                            .setAdapterPosition(pos)
-                            .setSettingsQue(settingsQue)
-                            .setCallback(this)
-                            .setApplication(loaderFragment.getApplication())
-                            .show(loaderFragment.getManager(), view.getResources().getString(R.string.title_delete_setting));
-                    break;
-                case R.id.ivBtSettingReset:
-                    if(setting.isModified()) {
-                        setting.resetModified(true);
-                        SettingUtil.initCardViewColor(view.getContext(), tvSettingName, cvSetting, setting);
-                    }
-                    break;
+            if (id == R.id.ivExpanderSettingsSetting || id == R.id.itemViewSetting) {
+                ViewUtil.internalUpdateExpanded(expanded, name);
+                updateExpanded();
+            } else if (id == R.id.ivBtRandomSettingValue) {
+                if(NARandomizer.isNA(setting.getRandomizer())) {
+                    new NoRandomDialog()
+                            .show(loaderFragment.getManager(), view.getResources().getString(R.string.title_no_random));
+                }else {
+                    setting.randomizeValue(view.getContext());
+                    SettingUtil.initCardViewColor(view.getContext(), tvSettingName, cvSetting, setting);
+                }
+            } else if (id == R.id.ivBtSaveSettingSetting) {
+                settingsQue.updateSetting(
+                        view.getContext(),
+                        setting,
+                        pos,
+                        true,
+                        false,
+                        this);
+            } else if (id == R.id.ivBtDeleteSetting) {
+                new SettingDeleteDialogEx()
+                        .setSetting(setting)
+                        .setAdapterPosition(pos)
+                        .setSettingsQue(settingsQue)
+                        .setCallback(this)
+                        .setApplication(loaderFragment.getApplication())
+                        .show(loaderFragment.getManager(), view.getResources().getString(R.string.title_delete_setting));
+            } else if (id == R.id.ivBtSettingReset) {
+                if(setting.isModified()) {
+                    setting.resetModified(true);
+                    SettingUtil.initCardViewColor(view.getContext(), tvSettingName, cvSetting, setting);
+                }
             }
         }
 

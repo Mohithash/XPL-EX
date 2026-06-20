@@ -130,42 +130,34 @@ public class AdapterHookSettings extends RecyclerView.Adapter<AdapterHookSetting
             try {
                 final int pos = getAdapterPosition();
                 final LuaSettingExtended setting = settings.get(pos);
-                switch (code) {
-                    case R.id.itemViewHookSettings:
-                    case R.id.ivExpanderSettingValue:
-                    case R.id.tvHookSettingName:
-                        ViewUtil.internalUpdateExpanded(expanded, setting.getName());
-                        updateExpanded();
-                        break;
-                    case R.id.ivBtHookSettingDelete:
-                        new SettingDeleteDialogEx()
-                                .setAdapterPosition(pos)
-                                .setApplication(fragmentLoader.getApplication())
-                                .setSetting(setting)
-                                .setSettingsQue(settingsQue)
-                                .setCallback(this)
-                                .show(fragmentLoader.getManager(),  view.getContext().getString(R.string.title_delete_setting));
-                        break;
-                    case R.id.ivBtHookSettingSave:
-                        settingsQue.updateSetting(
-                                view.getContext(),
-                                setting,
-                                pos,
-                                true,
-                                false,
-                                fragmentLoader.getApplication().getForceStop(),
-                                this);
-                        break;
-                    case R.id.ivBtHookSettingReset:
-                        if(setting.isModified()) setting.resetModified(true);
-                        break;
-                    case R.id.ivBtHookSettingRandomize:
-                        if(NARandomizer.isNA(setting.getRandomizer()))
-                            new NoRandomDialog()
-                                    .show(fragmentLoader.getManager(),
-                                            view.getResources().getString(R.string.title_no_random));
-                        else setting.randomizeValue(view.getContext());
-                        break;
+                if (code == R.id.itemViewHookSettings || code == R.id.ivExpanderSettingValue || code == R.id.tvHookSettingName) {
+                    ViewUtil.internalUpdateExpanded(expanded, setting.getName());
+                    updateExpanded();
+                } else if (code == R.id.ivBtHookSettingDelete) {
+                    new SettingDeleteDialogEx()
+                            .setAdapterPosition(pos)
+                            .setApplication(fragmentLoader.getApplication())
+                            .setSetting(setting)
+                            .setSettingsQue(settingsQue)
+                            .setCallback(this)
+                            .show(fragmentLoader.getManager(),  view.getContext().getString(R.string.title_delete_setting));
+                } else if (code == R.id.ivBtHookSettingSave) {
+                    settingsQue.updateSetting(
+                            view.getContext(),
+                            setting,
+                            pos,
+                            true,
+                            false,
+                            fragmentLoader.getApplication().getForceStop(),
+                            this);
+                } else if (code == R.id.ivBtHookSettingReset) {
+                    if(setting.isModified()) setting.resetModified(true);
+                } else if (code == R.id.ivBtHookSettingRandomize) {
+                    if(NARandomizer.isNA(setting.getRandomizer()))
+                        new NoRandomDialog()
+                                .show(fragmentLoader.getManager(),
+                                        view.getResources().getString(R.string.title_no_random));
+                    else setting.randomizeValue(view.getContext());
                 }
             }catch (Exception e) { XLog.e("onClick Failed: code=" + code, e, true); }
         }
@@ -189,19 +181,14 @@ public class AdapterHookSettings extends RecyclerView.Adapter<AdapterHookSetting
             int code = view.getId();
             XLog.i("onLongClick id=" + code);
             try {
-                switch (code) {
-                    case R.id.ivBtHookSettingDelete:
-                        Toast.makeText(v.getContext(), R.string.menu_setting_delete_hint, Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtHookSettingSave:
-                        Toast.makeText(v.getContext(), R.string.menu_setting_save_hint, Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtHookSettingReset:
-                        Toast.makeText(v.getContext(), R.string.menu_setting_reset_hint, Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtHookSettingRandomize:
-                        Toast.makeText(v.getContext(), R.string.menu_setting_random_hint, Toast.LENGTH_LONG).show();
-                        break;
+                if (code == R.id.ivBtHookSettingDelete) {
+                    Toast.makeText(v.getContext(), R.string.menu_setting_delete_hint, Toast.LENGTH_LONG).show();
+                } else if (code == R.id.ivBtHookSettingSave) {
+                    Toast.makeText(v.getContext(), R.string.menu_setting_save_hint, Toast.LENGTH_LONG).show();
+                } else if (code == R.id.ivBtHookSettingReset) {
+                    Toast.makeText(v.getContext(), R.string.menu_setting_reset_hint, Toast.LENGTH_LONG).show();
+                } else if (code == R.id.ivBtHookSettingRandomize) {
+                    Toast.makeText(v.getContext(), R.string.menu_setting_random_hint, Toast.LENGTH_LONG).show();
                 }
             }catch (Exception e) { XLog.e("onLongClick Failed: code=" + code, e); }
             return true;

@@ -64,7 +64,7 @@
     <!-- <color name="lightDisabledHook">#757575</color> Dark grey for light theme -->
     <!-- <color name="darkDisabledHook">#9E9E9E</color> Lighter grey for dark theme -->
 
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="android:windowDisablePreview">true</item>
 
         <item name="colorDisabledHook">@color/lightDisabledHook</item>
@@ -127,7 +127,7 @@
         <item name="colorDrawerBackground">@color/lightColorDrawerBackground</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat">
+    <style name="AppThemeDark" parent="Theme.MaterialComponents">
         <item name="android:windowDisablePreview">true</item>
 
         <!-- Add the disabled hook color for dark theme -->

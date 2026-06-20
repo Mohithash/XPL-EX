@@ -554,13 +554,8 @@ public class HookAdapter
                 return;
 
             final int id = view.getId();
-            switch (id) {
-                case R.id.ivExpanderHookItem:
-                case R.id.tvHookId:
-                case R.id.tvHookSubInfo:
-                case R.id.clHookItemLayout:
-                    handleExpandClickForGroup(currentItem);
-                    break;
+            if (id == R.id.ivExpanderHookItem || id == R.id.tvHookId || id == R.id.tvHookSubInfo || id == R.id.clHookItemLayout) {
+                handleExpandClickForGroup(currentItem);
             }
         }
 
@@ -581,19 +576,15 @@ public class HookAdapter
             pauseContent(false);
             final Context context = compoundButton.getContext();
             final XHook copy = XHook.copy(currentItem);
-            switch (id) {
-                case R.id.cbHookOptional:
-                    copy.optional = isChecked;
-                    break;
-                case R.id.cbHookUsage:
-                    copy.usage = isChecked;
-                    break;
-                case R.id.cbHookNotify:
-                    copy.notify = isChecked;
-                    break;
-                default:
-                    pauseContent(true);
-                    return;
+            if (id == R.id.cbHookOptional) {
+                copy.optional = isChecked;
+            } else if (id == R.id.cbHookUsage) {
+                copy.usage = isChecked;
+            } else if (id == R.id.cbHookNotify) {
+                copy.notify = isChecked;
+            } else {
+                pauseContent(true);
+                return;
             }
 
             if(DebugUtil.isDebug())

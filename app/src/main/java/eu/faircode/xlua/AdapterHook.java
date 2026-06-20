@@ -85,12 +85,9 @@ public class AdapterHook extends RecyclerView.Adapter<AdapterHook.ViewHolder> {
             XLog.i("onClick id=" + id);
             try {
                 final XLuaHook hook = hooks.get(getAdapterPosition());
-                switch (id) {
-                    case R.id.itemViewHooks:
-                    case R.id.tvHookName:
-                        ViewUtil.internalUpdateExpanded(expanded, hook.getObjectId());
-                        updateExpanded();
-                        break;
+                if (id == R.id.itemViewHooks || id == R.id.tvHookName) {
+                    ViewUtil.internalUpdateExpanded(expanded, hook.getObjectId());
+                    updateExpanded();
                 }
             }catch (Exception e) { XLog.e("onClick Failed: code=" + id, e); }
         }
@@ -121,12 +118,10 @@ public class AdapterHook extends RecyclerView.Adapter<AdapterHook.ViewHolder> {
             XLog.i("onLongClick id=" + id);
             try {
                 final XLuaHook hook = hooks.get(getAdapterPosition());
-                switch (id) {
-                    case R.id.itemViewHooks:
-                    case R.id.tvHookName:
-                        if(StringUtil.isValidAndNotWhitespaces(hook.getDescription())) Toast.makeText(view.getContext(), hook.getDescription(), Toast.LENGTH_SHORT).show();
-                        else Toast.makeText(view.getContext(), R.string.error_no_description_hook, Toast.LENGTH_SHORT).show();
-                        return true;
+                if (id == R.id.itemViewHooks || id == R.id.tvHookName) {
+                    if(StringUtil.isValidAndNotWhitespaces(hook.getDescription())) Toast.makeText(view.getContext(), hook.getDescription(), Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(view.getContext(), R.string.error_no_description_hook, Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             }catch (Exception e) { XLog.e("onLongClick Failed: code=" + id, e); }
             return false;

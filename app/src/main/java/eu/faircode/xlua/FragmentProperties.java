@@ -104,10 +104,8 @@ public class FragmentProperties extends ViewFloatingAction implements
     public boolean onLongClick(View v) {
         int id = v.getId();
         XLog.i("onLongClick id=" + id);
-        switch (id) {
-            case R.id.flPropertiesAddMapButton:
-                Snackbar.make(this.view, R.string.menu_property_add_hint, Snackbar.LENGTH_LONG).show();
-                break;
+        if (id == R.id.flPropertiesAddMapButton) {
+            Snackbar.make(this.view, R.string.menu_property_add_hint, Snackbar.LENGTH_LONG).show();
         }
         return false;
     }
@@ -117,16 +115,13 @@ public class FragmentProperties extends ViewFloatingAction implements
     public void onClick(View v) {
         int id = v.getId();
         XLog.i("onClick id=" + id);
-        switch (id) {
-            case R.id.flPropertiesMainButton:
-                invokeFloatingActions();
-                break;
-            case R.id.flPropertiesAddMapButton:
-                new PropertyAddDialogEx()
-                        .setCallback(this)
-                        .setPropertyQue(propertyQue)
-                        .show(Objects.requireNonNull(getFragmentManager()), view.getContext().getString(R.string.title_add_property));
-                break;
+        if (id == R.id.flPropertiesMainButton) {
+            invokeFloatingActions();
+        } else if (id == R.id.flPropertiesAddMapButton) {
+            new PropertyAddDialogEx()
+                    .setCallback(this)
+                    .setPropertyQue(propertyQue)
+                    .show(Objects.requireNonNull(getFragmentManager()), view.getContext().getString(R.string.title_add_property));
         }
     }
 

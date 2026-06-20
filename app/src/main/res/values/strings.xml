@@ -842,6 +842,26 @@
 
 
     <string name="menu_hooks" translatable="false">Hooks</string>
+    <string name="menu_fingerprint_profiles" translatable="false">Fingerprint Profiles</string>
+    <string name="menu_privacy_report" translatable="false">Privacy Report</string>
+    <string name="title_privacy_report" translatable="false">Privacy Report</string>
+    <string name="msg_privacy_report_empty" translatable="false">No hooks have triggered yet</string>
+    <string name="label_report_exception_prefix" translatable="false">Exception:</string>
+    <string name="title_fingerprint_profiles" translatable="false">Fingerprint Profiles</string>
+    <string name="label_fingerprint_template" translatable="false">Device Template</string>
+    <string name="label_fingerprint_profile_name" translatable="false">Profile Name</string>
+    <string name="label_fingerprint_select_apps" translatable="false">Select Apps</string>
+    <string name="label_fingerprint_location" translatable="false">Fake Location (optional)</string>
+    <string name="hint_fingerprint_latitude" translatable="false">Latitude</string>
+    <string name="hint_fingerprint_longitude" translatable="false">Longitude</string>
+    <string name="action_apply_fingerprint_profile" translatable="false">Apply to Selected Apps</string>
+    <string name="template_capture_current_device" translatable="false">Snapshot This Device</string>
+    <string name="template_generic_synthetic" translatable="false">Generic Synthetic Device</string>
+    <string name="msg_fingerprint_profile_applied" translatable="false">Applied to %1$d of %2$d apps</string>
+    <string name="msg_fingerprint_select_at_least_one_app" translatable="false">Select at least one app</string>
+    <string name="msg_fingerprint_profile_name_required" translatable="false">Enter a profile name</string>
+    <string name="msg_fingerprint_location_partial" translatable="false">Enter both latitude and longitude, or leave both blank</string>
+    <string name="msg_fingerprint_location_invalid" translatable="false">Latitude/longitude must be valid numbers</string>
     <string name="menu_props" translatable="false">Prop Values</string>
     <string name="menu_settings" translatable="false">Setting Values</string>
     <string name="menu_configs" translatable="false">Config Editor</string>

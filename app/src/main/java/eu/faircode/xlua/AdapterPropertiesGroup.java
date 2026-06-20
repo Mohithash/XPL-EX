@@ -177,48 +177,39 @@ public class AdapterPropertiesGroup extends RecyclerView.Adapter<AdapterProperti
                 String name = group.getSettingName();
                 XLog.i("selected=" + group);
 
-                switch (id) {
-                    case R.id.ivSettingDropDown:
-                    case R.id.itemViewPropGroup:
-                        ViewUtil.internalUpdateExpanded(expanded, name);
-                        updateExpanded();
-                        break;
-                    case R.id.ivBtDeleteSettingFromProperties:
-                        new SettingDeleteDialogEx()
-                                .setAdapterPosition(position)
-                                .setApplication(fragmentLoader.getApplication())
-                                .setSetting(setting)
-                                .setSettingsQue(settingsQue)
-                                .setCallback(this)
-                                .show(fragmentLoader.getManager(),  view.getContext().getString(R.string.title_delete_setting));
-                        break;
-                    case R.id.ivBtRandomSettingValueFromProperties:
-                        if(NARandomizer.isNA(setting.getRandomizer()))
-                            new NoRandomDialog()
-                                    .show(fragmentLoader.getManager(),
-                                            view.getResources().getString(R.string.title_no_random));
-                        else setting.randomizeValue(view.getContext());
-                        break;
-                    case R.id.ivBtSaveSettingFromProperties:
-                        settingsQue.updateSetting(
-                                view.getContext(),
-                                setting, position,
-                                true,
-                                false,
-                                fragmentLoader.getApplication().getForceStop(),
-                                this);
-                        break;
-                    case R.id.ivBtResetSettingValueFromProperties:
-                        if(setting.isModified()) setting.resetModified(true);
-                        break;
-                    case R.id.ivBtAddPropertyToSettingsGroup:
-                        new PropertyAddDialogEx()
-                                .setCallback(this)
-                                .setSettingName(setting.getName())
-                                .setPropertyQue(propertyQue)
-                                .show(Objects.requireNonNull(fragmentLoader.getManager()), view.getContext().getString(R.string.title_add_property));
-                        break;
-
+                if (id == R.id.ivSettingDropDown || id == R.id.itemViewPropGroup) {
+                    ViewUtil.internalUpdateExpanded(expanded, name);
+                    updateExpanded();
+                } else if (id == R.id.ivBtDeleteSettingFromProperties) {
+                    new SettingDeleteDialogEx()
+                            .setAdapterPosition(position)
+                            .setApplication(fragmentLoader.getApplication())
+                            .setSetting(setting)
+                            .setSettingsQue(settingsQue)
+                            .setCallback(this)
+                            .show(fragmentLoader.getManager(),  view.getContext().getString(R.string.title_delete_setting));
+                } else if (id == R.id.ivBtRandomSettingValueFromProperties) {
+                    if(NARandomizer.isNA(setting.getRandomizer()))
+                        new NoRandomDialog()
+                                .show(fragmentLoader.getManager(),
+                                        view.getResources().getString(R.string.title_no_random));
+                    else setting.randomizeValue(view.getContext());
+                } else if (id == R.id.ivBtSaveSettingFromProperties) {
+                    settingsQue.updateSetting(
+                            view.getContext(),
+                            setting, position,
+                            true,
+                            false,
+                            fragmentLoader.getApplication().getForceStop(),
+                            this);
+                } else if (id == R.id.ivBtResetSettingValueFromProperties) {
+                    if(setting.isModified()) setting.resetModified(true);
+                } else if (id == R.id.ivBtAddPropertyToSettingsGroup) {
+                    new PropertyAddDialogEx()
+                            .setCallback(this)
+                            .setSettingName(setting.getName())
+                            .setPropertyQue(propertyQue)
+                            .show(Objects.requireNonNull(fragmentLoader.getManager()), view.getContext().getString(R.string.title_add_property));
                 }
             }catch (Exception e) {  XLog.e("onClick: Failed! code=" + id, e, true); }
         }
@@ -229,23 +220,16 @@ public class AdapterPropertiesGroup extends RecyclerView.Adapter<AdapterProperti
             int id = v.getId();
             XLog.i("onLongClick id=" + id);
             try {
-                switch (id) {
-                    case R.id.ivBtDeleteSettingFromProperties:
-                        Snackbar.make(v, R.string.menu_setting_delete_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtRandomSettingValueFromProperties:
-                        Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtSaveSettingFromProperties:
-                        Snackbar.make(v, R.string.menu_setting_save_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtResetSettingValueFromProperties:
-                        Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.ivBtAddPropertyToSettingsGroup:
-                        Snackbar.make(v, R.string.menu_setting_add_prop_hint, Snackbar.LENGTH_LONG).show();
-                        break;
-
+                if (id == R.id.ivBtDeleteSettingFromProperties) {
+                    Snackbar.make(v, R.string.menu_setting_delete_hint, Snackbar.LENGTH_LONG).show();
+                } else if (id == R.id.ivBtRandomSettingValueFromProperties) {
+                    Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
+                } else if (id == R.id.ivBtSaveSettingFromProperties) {
+                    Snackbar.make(v, R.string.menu_setting_save_hint, Snackbar.LENGTH_LONG).show();
+                } else if (id == R.id.ivBtResetSettingValueFromProperties) {
+                    Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
+                } else if (id == R.id.ivBtAddPropertyToSettingsGroup) {
+                    Snackbar.make(v, R.string.menu_setting_add_prop_hint, Snackbar.LENGTH_LONG).show();
                 }
             }catch (Exception e) {  XLog.e("onClick: Failed! code=" + id, e, true); return false; }
             return true;

@@ -131,71 +131,65 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         @Override
         public void onClick(View view) {
             LuaHooksGroup group = groups.get(getAdapterPosition());
-            switch (view.getId()) {
-                case R.id.ivInfo:
-                    String name = group.getCleanTitle();
-                    String msg = HookInfoDialog.getMessage(view.getContext(), name);
-                    if(DebugUtil.isDebug())
-                        Log.d(LibUtil.generateTag(AdapterGroup.class), "INFO CLICK, Name=" + name + " Msg=" + msg);
+            int viewId = view.getId();
+            if (viewId == R.id.ivInfo) {
+                String name = group.getCleanTitle();
+                String msg = HookInfoDialog.getMessage(view.getContext(), name);
+                if(DebugUtil.isDebug())
+                    Log.d(LibUtil.generateTag(AdapterGroup.class), "INFO CLICK, Name=" + name + " Msg=" + msg);
 
-                    //Trying to call it here
-                    if(!Str.isEmpty(msg))
-                        HookInfoDialog.create()
-                                .setHookGroupName(name)
-                                .setHookGroupMessage(msg)
-                                .show(fragmentLoader.getManager(), "hook_info");
-                    break;
-                case R.id.ivException:
-                    StringBuilder sb = new StringBuilder();
-                    for (AssignmentPacket assignment : app.getAssignments(group.name))
-                        if (assignment.hookObj.group.equals(group.name))
-                            if (assignment.exception != null) {
-                                sb.append("<b>");
-                                sb.append(Html.escapeHtml(assignment.hookObj.getObjectId()));
-                                sb.append("</b><br><br>");
-                                for (String line : assignment.exception.split("\n")) {
-                                    sb.append(Html.escapeHtml(line));
-                                    sb.append("<br>");
-                                }
-                                sb.append("<br><br>");
+                //Trying to call it here
+                if(!Str.isEmpty(msg))
+                    HookInfoDialog.create()
+                            .setHookGroupName(name)
+                            .setHookGroupMessage(msg)
+                            .show(fragmentLoader.getManager(), "hook_info");
+            } else if (viewId == R.id.ivException) {
+                StringBuilder sb = new StringBuilder();
+                for (AssignmentPacket assignment : app.getAssignments(group.name))
+                    if (assignment.hookObj.group.equals(group.name))
+                        if (assignment.exception != null) {
+                            sb.append("<b>");
+                            sb.append(Html.escapeHtml(assignment.hookObj.getObjectId()));
+                            sb.append("</b><br><br>");
+                            for (String line : assignment.exception.split("\n")) {
+                                sb.append(Html.escapeHtml(line));
+                                sb.append("<br>");
                             }
+                            sb.append("<br><br>");
+                        }
 
-                    LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                    View alert = inflater.inflate(R.layout.exception, null, false);
-                    TextView tvException = alert.findViewById(R.id.tvException);
-                    tvException.setText(Html.fromHtml(sb.toString()));
+                LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                View alert = inflater.inflate(R.layout.exception, null, false);
+                TextView tvException = alert.findViewById(R.id.tvException);
+                tvException.setText(Html.fromHtml(sb.toString()));
 
-                    new AlertDialog.Builder(view.getContext())
-                            .setView(alert)
-                            .create()
-                            .show();
-                    break;
-
-                case R.id.tvGroup:
-                    cbAssigned.setChecked(!cbAssigned.isChecked());//Invoke the onCheck
-                    break;
-
-                //if they click on the Name then pop up
+                new AlertDialog.Builder(view.getContext())
+                        .setView(alert)
+                        .create()
+                        .show();
+            } else if (viewId == R.id.tvGroup) {
+                cbAssigned.setChecked(!cbAssigned.isChecked());//Invoke the onCheck
             }
+
+            //if they click on the Name then pop up
         }
 
         @SuppressLint("NonConstantResourceId")
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             final LuaHooksGroup group = groups.get(getAdapterPosition());
-            switch (compoundButton.getId()) {
-                case R.id.cbAssigned:
-                    if(group.hasWarning && checked) {
-                        String wMsg = HookWarnings.getWarningMessage(compoundButton.getContext(), group.name);
-                        if(wMsg != null)
-                            new HookWarningDialog()
-                                    .setGroup(group)
-                                    .setText(wMsg)
-                                    .show(fragmentLoader.getManager(), compoundButton.getContext().getString(R.string.title_hook_warning));
-                    }
+            if (compoundButton.getId() == R.id.cbAssigned) {
+                if(group.hasWarning && checked) {
+                    String wMsg = HookWarnings.getWarningMessage(compoundButton.getContext(), group.name);
+                    if(wMsg != null)
+                        new HookWarningDialog()
+                                .setGroup(group)
+                                .setText(wMsg)
+                                .show(fragmentLoader.getManager(), compoundButton.getContext().getString(R.string.title_hook_warning));
+                }
 
-                    app.setAssigned(compoundButton.getContext(), group.name, checked);
-                    break;
+                app.setAssigned(compoundButton.getContext(), group.name, checked);
             }
         }
     }

@@ -29,9 +29,16 @@ import android.os.Looper;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.util.Locale;
 
@@ -83,6 +90,10 @@ public class ActivityBase extends AppCompatActivity {
 
         isForceEnglish = getIsForceEnglish();
         setTheme("dark".equals(theme) ? R.style.AppThemeDark : R.style.AppThemeLight);
+
+        // Android 16 (API 36) enforces edge-to-edge with no opt-out; draw behind the
+        // system bars ourselves and restore spacing via applyEdgeToEdgeInsets() below.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         if(isForceEnglish) {
             try {
                 String languageToLoad  = "en"; // your language
@@ -122,6 +133,53 @@ public class ActivityBase extends AppCompatActivity {
     }*/
 
     public String getThemeName() { return (theme == null ? "dark" : theme); }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        applyEdgeToEdgeInsets();
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        applyEdgeToEdgeInsets();
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        super.setContentView(view, params);
+        applyEdgeToEdgeInsets();
+    }
+
+    // Pads the activity's actual content (skipping any DrawerLayout's own padding, so
+    // its drawer panel stays full-bleed) with the current system bar insets, so toolbars,
+    // lists, FABs and snackbars don't render under the status/navigation bar on Android 16+.
+    private void applyEdgeToEdgeInsets() {
+        ViewGroup decorContent = findViewById(android.R.id.content);
+        if (decorContent == null || decorContent.getChildCount() == 0)
+            return;
+
+        View root = decorContent.getChildAt(0);
+        final View insetTarget = (root instanceof DrawerLayout && ((ViewGroup) root).getChildCount() > 0)
+                ? ((ViewGroup) root).getChildAt(0)
+                : root;
+
+        final int basePaddingLeft = insetTarget.getPaddingLeft();
+        final int basePaddingTop = insetTarget.getPaddingTop();
+        final int basePaddingRight = insetTarget.getPaddingRight();
+        final int basePaddingBottom = insetTarget.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(insetTarget, (v, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    basePaddingLeft + bars.left,
+                    basePaddingTop + bars.top,
+                    basePaddingRight + bars.right,
+                    basePaddingBottom + bars.bottom);
+            return windowInsets;
+        });
+    }
 
     /*public static Locale getLocale(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

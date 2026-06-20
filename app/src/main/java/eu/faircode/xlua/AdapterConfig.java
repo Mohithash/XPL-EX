@@ -135,21 +135,17 @@ public class AdapterConfig extends RecyclerView.Adapter<AdapterConfig.ViewHolder
             XLog.i("onClick id=" + id);
             final LuaSettingExtended setting = settings.get(getAdapterPosition());
             String name = setting.getName();
-            switch (id) {
-                case R.id.itemViewConfig:
-                    ViewUtil.internalUpdateExpanded(expanded, name);
-                    updateExpanded();
-                    break;
-                case R.id.ivBtRandomConfigSettingValue:
-                    if(NARandomizer.isNA(setting.getRandomizer()))
-                        new NoRandomDialog()
-                                .show(fragmentLoader.getManager(),
-                                        view.getResources().getString(R.string.title_no_random));
-                    else setting.randomizeValue(view.getContext());
-                    break;
-                case R.id.ivBtResetConfigSettingValue:
-                    if(setting.isModified()) setting.resetModified(true);
-                    break;
+            if (id == R.id.itemViewConfig) {
+                ViewUtil.internalUpdateExpanded(expanded, name);
+                updateExpanded();
+            } else if (id == R.id.ivBtRandomConfigSettingValue) {
+                if(NARandomizer.isNA(setting.getRandomizer()))
+                    new NoRandomDialog()
+                            .show(fragmentLoader.getManager(),
+                                    view.getResources().getString(R.string.title_no_random));
+                else setting.randomizeValue(view.getContext());
+            } else if (id == R.id.ivBtResetConfigSettingValue) {
+                if(setting.isModified()) setting.resetModified(true);
             }
         }
 
@@ -160,12 +156,10 @@ public class AdapterConfig extends RecyclerView.Adapter<AdapterConfig.ViewHolder
             XLog.i("onCheckedChanged id=" + id);
             int pos = getAdapterPosition();
             LuaSettingExtended setting = settings.get(pos);
-            switch (id) {
-                case R.id.cbEnableConfigSetting:
-                    setting.setIsEnabled(isChecked);
-                    config.setSettings(settings);
-                    notifyItemChanged(pos);
-                    break;
+            if (id == R.id.cbEnableConfigSetting) {
+                setting.setIsEnabled(isChecked);
+                config.setSettings(settings);
+                notifyItemChanged(pos);
             }
         }
 
@@ -205,13 +199,10 @@ public class AdapterConfig extends RecyclerView.Adapter<AdapterConfig.ViewHolder
         public boolean onLongClick(View v) {
             int id = v.getId();
             XLog.i("onLongClick id=" + id);
-            switch (id) {
-                case R.id.ivBtRandomConfigSettingValue:
-                    Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.ivBtResetConfigSettingValue:
-                    Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
-                    break;
+            if (id == R.id.ivBtRandomConfigSettingValue) {
+                Snackbar.make(v, R.string.menu_setting_random_hint, Snackbar.LENGTH_LONG).show();
+            } else if (id == R.id.ivBtResetConfigSettingValue) {
+                Snackbar.make(v, R.string.menu_setting_reset_hint, Snackbar.LENGTH_LONG).show();
             }
 
             return true;

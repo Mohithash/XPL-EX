@@ -102,13 +102,9 @@ public class AdapterGroupHooks extends RecyclerView.Adapter<AdapterGroupHooks.Vi
             try {
                 final HookGroup group = filtered_groups.get(getAdapterPosition());
                 final String name = group.name;
-                switch (id) {
-                    case R.id.itemViewGroupHooks:
-                    case R.id.tvHookGroupName:
-                    case R.id.ivExpanderGroup:
-                        ViewUtil.internalUpdateExpanded(expanded, name);
-                        updateExpanded();
-                        break;
+                if (id == R.id.itemViewGroupHooks || id == R.id.tvHookGroupName || id == R.id.ivExpanderGroup) {
+                    ViewUtil.internalUpdateExpanded(expanded, name);
+                    updateExpanded();
                 }
             }catch (Exception e) { XLog.e("onClick Failed: code=" + id, e, true); }
         }

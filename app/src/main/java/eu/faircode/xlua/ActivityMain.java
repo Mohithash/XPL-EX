@@ -58,6 +58,7 @@ import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -75,6 +76,8 @@ import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.FileDialogUtils;
+import eu.faircode.xlua.x.ui.activities.ActivityFingerprintProfiles;
+import eu.faircode.xlua.x.ui.activities.ActivityPrivacyReport;
 import eu.faircode.xlua.x.ui.activities.HooksExActivity;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
@@ -124,6 +127,8 @@ public class ActivityMain extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
         manager.ensureIsOpen(this, PrefManager.SETTINGS_MAIN);
         // Check if service is running
@@ -324,6 +329,20 @@ public class ActivityMain extends ActivityBase {
             @Override
             public void onClick(DrawerItem item) {
                 menuHooks();
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_fingerprint_profiles, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                startActivity(new Intent(ActivityMain.this, ActivityFingerprintProfiles.class));
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_privacy_report, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                startActivity(new Intent(ActivityMain.this, ActivityPrivacyReport.class));
             }
         }));
 
@@ -585,13 +604,15 @@ public class ActivityMain extends ActivityBase {
             drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(drawerList))
-            drawerLayout.closeDrawer(drawerList);
-        else
-            finish();
-    }
+    private final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (drawerLayout != null && drawerLayout.isDrawerOpen(drawerList))
+                drawerLayout.closeDrawer(drawerList);
+            else
+                finish();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -650,70 +671,60 @@ public class ActivityMain extends ActivityBase {
             return true;
 
         manager.ensureIsOpen(ActivityMain.this, PrefManager.SETTINGS_MAIN);
-        switch (item.getItemId()) {
-            case R.id.menu_show:
-                AdapterApp.enumShow show = (fragmentMain == null ? AdapterApp.enumShow.none : fragmentMain.getShow());
-                this.menu.findItem(R.id.menu_show_user).setEnabled(show != AdapterApp.enumShow.none);
-                this.menu.findItem(R.id.menu_show_icon).setEnabled(show != AdapterApp.enumShow.none);
-                this.menu.findItem(R.id.menu_show_all).setEnabled(show != AdapterApp.enumShow.none);
-                this.menu.findItem(R.id.menu_show_hook).setEnabled(show != AdapterApp.enumShow.none);
-                this.menu.findItem(R.id.menu_show_system).setEnabled(show != AdapterApp.enumShow.none);
-                switch (show) {
-                    case user:
-                        this.menu.findItem(R.id.menu_show_user).setChecked(true);
-                        break;
-                    case icon:
-                        this.menu.findItem(R.id.menu_show_icon).setChecked(true);
-                        break;
-                    case all:
-                        this.menu.findItem(R.id.menu_show_all).setChecked(true);
-                        break;
-                    case hook:
-                        this.menu.findItem(R.id.menu_show_hook).setChecked(true);
-                        break;
-                    case system:
-                        this.menu.findItem(R.id.menu_show_system).setChecked(true);
-                        break;
-                }
-                return true;
-            case R.id.menu_show_system:
-            case R.id.menu_show_hook:
-            case R.id.menu_show_user:
-            case R.id.menu_show_icon:
-            case R.id.menu_show_all:
-                item.setChecked(!item.isChecked());
-                final AdapterApp.enumShow set;
-                switch (item.getItemId()) {
-                    case R.id.menu_show_user:
-                        set = AdapterApp.enumShow.user;
-                        manager.putString(PrefManager.SETTING_APPS_SHOW, "show_user");
-                        break;
-                    case R.id.menu_show_all:
-                        set = AdapterApp.enumShow.all;
-                        manager.putString(PrefManager.SETTING_APPS_SHOW, "show_all");
-                        break;
-                    case R.id.menu_show_hook:
-                        set = AdapterApp.enumShow.hook;
-                        manager.putString(PrefManager.SETTING_APPS_SHOW, "show_hook");
-                        break;
-                    case R.id.menu_show_system:
-                        set = AdapterApp.enumShow.system;
-                        manager.putString(PrefManager.SETTING_APPS_SHOW, "show_system");
-                        break;
-                    default:
-                        set = AdapterApp.enumShow.icon;
-                        manager.putString(PrefManager.SETTING_APPS_SHOW, "show_icon");
-                        break;
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_show) {
+            AdapterApp.enumShow show = (fragmentMain == null ? AdapterApp.enumShow.none : fragmentMain.getShow());
+            this.menu.findItem(R.id.menu_show_user).setEnabled(show != AdapterApp.enumShow.none);
+            this.menu.findItem(R.id.menu_show_icon).setEnabled(show != AdapterApp.enumShow.none);
+            this.menu.findItem(R.id.menu_show_all).setEnabled(show != AdapterApp.enumShow.none);
+            this.menu.findItem(R.id.menu_show_hook).setEnabled(show != AdapterApp.enumShow.none);
+            this.menu.findItem(R.id.menu_show_system).setEnabled(show != AdapterApp.enumShow.none);
+            switch (show) {
+                case user:
+                    this.menu.findItem(R.id.menu_show_user).setChecked(true);
+                    break;
+                case icon:
+                    this.menu.findItem(R.id.menu_show_icon).setChecked(true);
+                    break;
+                case all:
+                    this.menu.findItem(R.id.menu_show_all).setChecked(true);
+                    break;
+                case hook:
+                    this.menu.findItem(R.id.menu_show_hook).setChecked(true);
+                    break;
+                case system:
+                    this.menu.findItem(R.id.menu_show_system).setChecked(true);
+                    break;
+            }
+            return true;
+        } else if (itemId == R.id.menu_show_system || itemId == R.id.menu_show_hook || itemId == R.id.menu_show_user
+                || itemId == R.id.menu_show_icon || itemId == R.id.menu_show_all) {
+            item.setChecked(!item.isChecked());
+            final AdapterApp.enumShow set;
+            if (itemId == R.id.menu_show_user) {
+                set = AdapterApp.enumShow.user;
+                manager.putString(PrefManager.SETTING_APPS_SHOW, "show_user");
+            } else if (itemId == R.id.menu_show_all) {
+                set = AdapterApp.enumShow.all;
+                manager.putString(PrefManager.SETTING_APPS_SHOW, "show_all");
+            } else if (itemId == R.id.menu_show_hook) {
+                set = AdapterApp.enumShow.hook;
+                manager.putString(PrefManager.SETTING_APPS_SHOW, "show_hook");
+            } else if (itemId == R.id.menu_show_system) {
+                set = AdapterApp.enumShow.system;
+                manager.putString(PrefManager.SETTING_APPS_SHOW, "show_system");
+            } else {
+                set = AdapterApp.enumShow.icon;
+                manager.putString(PrefManager.SETTING_APPS_SHOW, "show_icon");
+            }
 
-                fragmentMain.setShow(set);
-                return true;
-            case R.id.menu_help:
-                menuHelp();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+            fragmentMain.setShow(set);
+            return true;
+        } else if (itemId == R.id.menu_help) {
+            menuHelp();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

@@ -23,6 +23,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -190,7 +191,11 @@ public class FragmentMain extends Fragment implements ILoader {
         ifPackage.addAction(Intent.ACTION_PACKAGE_CHANGED);
         ifPackage.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
         ifPackage.addDataScheme("package");
-        Objects.requireNonNull(getContext()).registerReceiver(packageChangedReceiver, ifPackage);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            Objects.requireNonNull(getContext()).registerReceiver(packageChangedReceiver, ifPackage, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            Objects.requireNonNull(getContext()).registerReceiver(packageChangedReceiver, ifPackage);
+        }
 
         ActivityMain.manager.ensureIsOpen(requireContext(), PrefManager.SETTINGS_MAIN);
         show = PrefManager.settingToShow(ActivityMain.manager.getString(PrefManager.SETTING_APPS_SHOW, "show_user", true));

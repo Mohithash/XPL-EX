@@ -146,66 +146,58 @@ public class  FragmentConfig extends
 
         try {
             MockConfig config = rvConfigAdapter.getConfig();
-            switch (id) {
-                case R.id.ivDeleteConfig:
-                    if(!unSaved.contains(config))
-                        new ConfigDeleteDialog()
-                                .setAdapterPosition(-1)
-                                .setConfig(config)
-                                .setQue(configsQue)
-                                .setCallback(this)
-                                .show(Objects.requireNonNull(getFragmentManager()), getResources().getString(R.string.title_delete_config));
-                    else {
-                        unSaved.remove(config);
-                        loadData();
-                    }
-                    break;
-                case R.id.flActionConfigApply:
-                    setRefreshState(true);
-                    rvConfigAdapter.applyConfig(getContext());
-                    setRefreshState(false);
-                    Snackbar.make(view, R.string.result_config_finish_applying, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.flActionConfigDelete:
-                    if(!unSaved.contains(config))
-                        configsQue.sendConfig(
-                                getContext(),
-                                -1,
-                                config,
-                                false,
-                                true,
-                                this);
-                    else Snackbar.make(v, R.string.result_config_failed_delete_settings, Snackbar.LENGTH_LONG).show();
-                    break;
-                case R.id.flActionConfigSave:
+            if (id == R.id.ivDeleteConfig) {
+                if(!unSaved.contains(config))
+                    new ConfigDeleteDialog()
+                            .setAdapterPosition(-1)
+                            .setConfig(config)
+                            .setQue(configsQue)
+                            .setCallback(this)
+                            .show(Objects.requireNonNull(getFragmentManager()), getResources().getString(R.string.title_delete_config));
+                else {
+                    unSaved.remove(config);
+                    loadData();
+                }
+            } else if (id == R.id.flActionConfigApply) {
+                setRefreshState(true);
+                rvConfigAdapter.applyConfig(getContext());
+                setRefreshState(false);
+                Snackbar.make(view, R.string.result_config_finish_applying, Snackbar.LENGTH_LONG).show();
+            } else if (id == R.id.flActionConfigDelete) {
+                if(!unSaved.contains(config))
                     configsQue.sendConfig(
                             getContext(),
                             -1,
-                            rvConfigAdapter.getConfig(),
+                            config,
                             false,
-                            false,
+                            true,
                             this);
-                    break;
-                case R.id.flActionConfigExport:
-                    try { startActivityForResult(UiUtil.createSaveFileIntent(), PICK_FOLDER_RESULT_CODE);
-                    } catch (Exception e) {
-                        XLog.e("Open Directory Error", e, true);
-                        Snackbar.make(v, R.string.result_open_directory_failed, Snackbar.LENGTH_LONG).show();
-                    }
-                    break;
-                case R.id.flActionConfigImport:
-                    try {
-                        startActivityForResult(
-                            Intent.createChooser(UiUtil.createOpenFileIntent(), getResources().getString(R.string.title_select_file)),
-                                PICK_FILE_REQUEST_CODE);
-                    } catch (Exception e) {
-                        XLog.e("Open File Error", e, true);
-                        Snackbar.make(v, R.string.result_open_file_failed, Snackbar.LENGTH_LONG).show();
-                    }
-                    break;
-                case R.id.flActionConfigOptions:
-                    invokeFloatingActions();
-                    break;
+                else Snackbar.make(v, R.string.result_config_failed_delete_settings, Snackbar.LENGTH_LONG).show();
+            } else if (id == R.id.flActionConfigSave) {
+                configsQue.sendConfig(
+                        getContext(),
+                        -1,
+                        rvConfigAdapter.getConfig(),
+                        false,
+                        false,
+                        this);
+            } else if (id == R.id.flActionConfigExport) {
+                try { startActivityForResult(UiUtil.createSaveFileIntent(), PICK_FOLDER_RESULT_CODE);
+                } catch (Exception e) {
+                    XLog.e("Open Directory Error", e, true);
+                    Snackbar.make(v, R.string.result_open_directory_failed, Snackbar.LENGTH_LONG).show();
+                }
+            } else if (id == R.id.flActionConfigImport) {
+                try {
+                    startActivityForResult(
+                        Intent.createChooser(UiUtil.createOpenFileIntent(), getResources().getString(R.string.title_select_file)),
+                            PICK_FILE_REQUEST_CODE);
+                } catch (Exception e) {
+                    XLog.e("Open File Error", e, true);
+                    Snackbar.make(v, R.string.result_open_file_failed, Snackbar.LENGTH_LONG).show();
+                }
+            } else if (id == R.id.flActionConfigOptions) {
+                invokeFloatingActions();
             }
         }catch (Exception e) { XLog.e("onClick Failed! id=" + id, e, true); }
     }
@@ -215,28 +207,20 @@ public class  FragmentConfig extends
     public boolean onLongClick(View v) {
         int code = v.getId();
         XLog.i("onLongClick id=" + code);
-        switch (code) {
-            case R.id.ivDeleteConfig:
-                Snackbar.make(view, R.string.menu_config_delete_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigApply:
-                Snackbar.make(view, R.string.menu_config_apply_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigSave:
-                Snackbar.make(view, R.string.menu_config_save_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigExport:
-                Snackbar.make(view, R.string.menu_config_export_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigImport:
-                Snackbar.make(view, R.string.menu_config_import_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigOptions:
-                Snackbar.make(view, R.string.menu_config_hint, Snackbar.LENGTH_LONG).show();
-                break;
-            case R.id.flActionConfigDelete:
-                Snackbar.make(view, R.string.menu_config_delete_settings_hint, Snackbar.LENGTH_LONG).show();
-                break;
+        if (code == R.id.ivDeleteConfig) {
+            Snackbar.make(view, R.string.menu_config_delete_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigApply) {
+            Snackbar.make(view, R.string.menu_config_apply_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigSave) {
+            Snackbar.make(view, R.string.menu_config_save_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigExport) {
+            Snackbar.make(view, R.string.menu_config_export_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigImport) {
+            Snackbar.make(view, R.string.menu_config_import_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigOptions) {
+            Snackbar.make(view, R.string.menu_config_hint, Snackbar.LENGTH_LONG).show();
+        } else if (code == R.id.flActionConfigDelete) {
+            Snackbar.make(view, R.string.menu_config_delete_settings_hint, Snackbar.LENGTH_LONG).show();
         }
 
         return true;

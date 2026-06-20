@@ -205,11 +205,11 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             try {
                 AppXpPacket app = filtered.get(getAdapterPosition());
                 String pkgName = app.packageName;
-                switch (view.getId()) {
-                    case R.id.itemView:
-                        ViewUtil.internalUpdateExpanded(expanded, pkgName);
-                        updateExpand();
-                        break;
+                int viewId = view.getId();
+                if (viewId == R.id.itemView) {
+                    ViewUtil.internalUpdateExpanded(expanded, pkgName);
+                    updateExpand();
+                }
                     /*case R.id.ivGroupHooks:
                         Intent settingIntent = new Intent(view.getContext(), ActivityAppControl.class);
                         settingIntent.putExtra("packageName", app.packageName);
@@ -242,10 +242,10 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                         propsIntent.putExtra("packageName", app.packageName);
                         view.getContext().startActivity(propsIntent);
                         break;*/
-                    case R.id.ivSettings:
-                        Intent settingsExIntent = new Intent(view.getContext(), SettingsExActivity.class);
-                        settingsExIntent.putExtra(UserClientAppContext.USER_CONTEXT_ARG, UserClientAppContext.create(app).toBundle());
-                        view.getContext().startActivity(settingsExIntent);
+                if (viewId == R.id.ivSettings) {
+                    Intent settingsExIntent = new Intent(view.getContext(), SettingsExActivity.class);
+                    settingsExIntent.putExtra(UserClientAppContext.USER_CONTEXT_ARG, UserClientAppContext.create(app).toBundle());
+                    view.getContext().startActivity(settingsExIntent);
                         /*PackageManager pm = view.getContext().getPackageManager();
                         Intent settings = pm.getLaunchIntentForPackage(XUtil.PRO_PACKAGE_NAME);
                         if (settings == null) {
@@ -259,7 +259,6 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                             settings.putExtra("packageName", pkgName);
                             view.getContext().startActivity(settings);
                         }*/
-                        break;
                 }
             }catch (Exception e) {
                 XLog.e("Error with AdapterApp onClick", e);
@@ -273,7 +272,6 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                 AppXpPacket app = filtered.get(getAdapterPosition());
                 int id = view.getId();
                 Log.i(TAG, "onLongClick=" + id + " full=" + view);
-                switch (id) {
                     /*case R.id.ivGroupHooks:
                         Toast.makeText(view.getContext(), R.string.button_hooks_group_hint, Toast.LENGTH_SHORT).show();
                         break;
@@ -286,12 +284,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                     case R.id.ivPropertiesButton:
                         Toast.makeText(view.getContext(), R.string.button_props_hint, Toast.LENGTH_SHORT).show();
                         break;*/
-                    default:
-                        Intent launch = view.getContext().getPackageManager().getLaunchIntentForPackage(app.packageName);
-                        if (launch != null) view.getContext().startActivity(launch);
-                        else Toast.makeText(view.getContext(), R.string.error_no_activity, Toast.LENGTH_SHORT).show();
-                        break;
-                }
+                Intent launch = view.getContext().getPackageManager().getLaunchIntentForPackage(app.packageName);
+                if (launch != null) view.getContext().startActivity(launch);
+                else Toast.makeText(view.getContext(), R.string.error_no_activity, Toast.LENGTH_SHORT).show();
 
                 return true;
             }catch (Exception e) {
@@ -309,49 +304,47 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                 Log.i(TAG, "Check changed");
                 final AppXpPacket app = filtered.get(getAdapterPosition());
                 final Context context = compoundButton.getContext();
-                switch (compoundButton.getId()) {
-                    case R.id.cbAssigned:
-                        if(checked && (warn)) {
-                            ConfirmDialog.create()
-                                    .setContext(context)
-                                    .setMessage(context.getString(R.string.warning_bulk_check))
-                                    .setDelay(10)
-                                    .onConfirm(() -> {
-                                        try {
-                                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                                            prefs.edit().putBoolean("bulkWarn", false).apply();
-                                            warn = false;
-                                        }catch (Exception ignored) { }
-                                        TryRun.onMain(() -> {
-                                            updateAssignments(context, app, group, checked);
-                                            notifyItemChanged(getAdapterPosition());
-                                        });
-                                    })
-                                    .onCancel(() -> {
-                                        TryRun.onMain(() -> {
-                                            notifyItemChanged(getAdapterPosition());
-                                        });
-                                    })
-                                    .show(fragmentLoader.getManager(), context.getString(R.string.warning_bulk_check_title));
-                        } else {
-                            updateAssignments(context, app, group, checked);
-                            notifyItemChanged(getAdapterPosition());
-                        }
-                        break;
-                    case R.id.cbForceStop:
-                        app.forceStop = checked;
-                        executor.submit(() -> {
-                            final A_CODE result = PutSettingExCommand.putForceStop(compoundButton.getContext(), app.uid, app.packageName, app.forceStop);
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @SuppressLint("NotifyDataSetChanged")
-                                @Override
-                                public void run() {
-                                    Toast.makeText(compoundButton.getContext(), result.name(), Toast.LENGTH_SHORT).show();
-                                    //notifyDataSetChanged();
-                                }
-                            });
+                int checkedId = compoundButton.getId();
+                if (checkedId == R.id.cbAssigned) {
+                    if(checked && (warn)) {
+                        ConfirmDialog.create()
+                                .setContext(context)
+                                .setMessage(context.getString(R.string.warning_bulk_check))
+                                .setDelay(10)
+                                .onConfirm(() -> {
+                                    try {
+                                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                                        prefs.edit().putBoolean("bulkWarn", false).apply();
+                                        warn = false;
+                                    }catch (Exception ignored) { }
+                                    TryRun.onMain(() -> {
+                                        updateAssignments(context, app, group, checked);
+                                        notifyItemChanged(getAdapterPosition());
+                                    });
+                                })
+                                .onCancel(() -> {
+                                    TryRun.onMain(() -> {
+                                        notifyItemChanged(getAdapterPosition());
+                                    });
+                                })
+                                .show(fragmentLoader.getManager(), context.getString(R.string.warning_bulk_check_title));
+                    } else {
+                        updateAssignments(context, app, group, checked);
+                        notifyItemChanged(getAdapterPosition());
+                    }
+                } else if (checkedId == R.id.cbForceStop) {
+                    app.forceStop = checked;
+                    executor.submit(() -> {
+                        final A_CODE result = PutSettingExCommand.putForceStop(compoundButton.getContext(), app.uid, app.packageName, app.forceStop);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @SuppressLint("NotifyDataSetChanged")
+                            @Override
+                            public void run() {
+                                Toast.makeText(compoundButton.getContext(), result.name(), Toast.LENGTH_SHORT).show();
+                                //notifyDataSetChanged();
+                            }
                         });
-                        break;
+                    });
                 }
             }catch (Exception e) {
                 Log.e(TAG, "Failed to update Check State of Application Hook Group! Error=" + e);

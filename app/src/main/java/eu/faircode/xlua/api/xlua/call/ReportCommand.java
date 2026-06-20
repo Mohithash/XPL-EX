@@ -219,9 +219,8 @@ public class ReportCommand extends CallCommandHandler {
                 // Main
                 Intent main = ctx.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
                 if (main != null) {
-                    int flags = (Build.VERSION.SDK_INT > Build.VERSION_CODES.R ? 0x04000000 : 0);
                     main.putExtra(ActivityMain.EXTRA_SEARCH_PACKAGE, packageName);
-                    @SuppressLint("WrongConstant") PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, flags);
+                    PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, PendingIntent.FLAG_IMMUTABLE);
                     builder.setContentIntent(pi);
                 }
 
@@ -246,9 +245,8 @@ public class ReportCommand extends CallCommandHandler {
                 // Main
                 Intent main = ctx.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
                 if (main != null) {
-                    int flags = (Build.VERSION.SDK_INT > Build.VERSION_CODES.R ? 0x04000000 : 0);
                     main.putExtra(ActivityMain.EXTRA_SEARCH_PACKAGE, packageName);
-                    @SuppressLint("WrongConstant") PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, flags);
+                    PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, PendingIntent.FLAG_IMMUTABLE);
                     builder.setContentIntent(pi);
                 }
 

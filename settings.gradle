@@ -1,1 +1,27 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://api.xposed.info' }
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+            content {
+                includeGroupByRegex("dev.rikka.*")
+                includeGroup("org.lsposed.hiddenapibypass")
+            }
+        }
+    }
+}
+
+rootProject.name = 'XPL-EX'
 include ':app'

@@ -213,33 +213,29 @@ public class HooksExFragment
     public void onClick(View v) {
         final int id = CoreUiLog.getViewIdOnClick(v, TAG);
         final Context context = v.getContext();
-        switch (id) {
-            case R.id.flSettingsButtonOne:
-                recyclerViewWrapper.getFloatingActionButtonContext().invokeFloatingActions();
-                break;
-            case R.id.flSettingsButtonTwo:
-                ConfUtils.startConfigFilePicker(this);
-                break;
-            case R.id.flSettingsButtonThree:
-                TryRun.onMain(() -> {
-                    HookAdapter adapter = (HookAdapter)getAdapter().getAsListAdapterOrNull();
-                    if(adapter != null) {
-                        HookEditDialog.create()
-                                .setEditListener((hook) -> {
-                                    if(hook != null && hook.isValid() && !Str.isEmpty(hook.group)) {
-                                        ResultRequest res = PutHookExCommand.putEx(context, hook, false);
-                                        if(res.successful())
-                                            adapter.onHookEdited(null, res.hook, false);
+        if (id == R.id.flSettingsButtonOne) {
+            recyclerViewWrapper.getFloatingActionButtonContext().invokeFloatingActions();
+        } else if (id == R.id.flSettingsButtonTwo) {
+            ConfUtils.startConfigFilePicker(this);
+        } else if (id == R.id.flSettingsButtonThree) {
+            TryRun.onMain(() -> {
+                HookAdapter adapter = (HookAdapter)getAdapter().getAsListAdapterOrNull();
+                if(adapter != null) {
+                    HookEditDialog.create()
+                            .setEditListener((hook) -> {
+                                if(hook != null && hook.isValid() && !Str.isEmpty(hook.group)) {
+                                    ResultRequest res = PutHookExCommand.putEx(context, hook, false);
+                                    if(res.successful())
+                                        adapter.onHookEdited(null, res.hook, false);
 
-                                        Log.d(TAG, "Hook Sent Status " + res.successful() + " Hook=" + hook.getObjectId());
-                                        Snackbar.make(requireView(), res.successful() ?
-                                                getString(R.string.msg_create_hook_success) :
-                                                getString(R.string.msg_create_hook_error), Snackbar.LENGTH_LONG).show();
-                                    }
-                                }).show(getFragmentMan(), context.getString(R.string.title_hook_edit));
-                    }
-                });
-                break;
+                                    Log.d(TAG, "Hook Sent Status " + res.successful() + " Hook=" + hook.getObjectId());
+                                    Snackbar.make(requireView(), res.successful() ?
+                                            getString(R.string.msg_create_hook_success) :
+                                            getString(R.string.msg_create_hook_error), Snackbar.LENGTH_LONG).show();
+                                }
+                            }).show(getFragmentMan(), context.getString(R.string.title_hook_edit));
+                }
+            });
         }
     }
 

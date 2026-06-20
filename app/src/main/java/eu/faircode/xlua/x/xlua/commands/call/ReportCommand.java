@@ -1,6 +1,5 @@
 package eu.faircode.xlua.x.xlua.commands.call;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -134,9 +133,8 @@ public class ReportCommand extends CallCommandHandlerEx {
                             // Main
                             Intent main = ctx.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
                             if (main != null) {
-                                int flags = (Build.VERSION.SDK_INT > Build.VERSION_CODES.R ? 0x04000000 : 0);
                                 main.putExtra(ActivityMain.EXTRA_SEARCH_PACKAGE, commandData.getCategory());
-                                @SuppressLint("WrongConstant") PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, flags);
+                                PendingIntent pi = PendingIntent.getActivity(ctx, uid, main, PendingIntent.FLAG_IMMUTABLE);
                                 builder.setContentIntent(pi);
                             }
 

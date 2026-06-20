@@ -19,13 +19,63 @@ public class Evidence {
     //List of bad dev ids / serial
     public static final List<String> DEFECT_IDS = Arrays.asList("9774d56d682e549c", "unknown", "000000000000000");
 
-    public static final List<String> SU_PATHS = Arrays.asList("/system/app/superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/data/local/su", "/su/bin/su");
-    public static final List<String> ROOT_PACKAGES = Arrays.asList("io.github.vvb2060.magisk", "io.github.vvb2060.magisk.lit", "com.noshufou.android.su", "com.noshufou.android.su.elite", "eu.chainfire.supersu", "com.koushikdutta.superuser", "com.thirdparty.superuser", "com.yellowes.su", "com.topjohnwu.magisk", "io.github.huskydg.magisk");
-    public static final List<String> BAD_APPS = Arrays.asList("com.oasisfeng.greenify", "com.koushikdutta.rommanager", "com.dimonvideo.luckypatcher", "com.chelpus.lackypatch", "com.ramdroid.appquarantine", "eu.faircode.xlua", "org.lsposed.manager", "com.tsng.hidemyapplist", "rikka.appops", "com.guoshi.httpcanary", "com.httpcanary.pro", "com.aistra.hail", "github.tornaco.android.thanos.pro", "com.mrchandler.disableprox", "org.adaway", "dev.ukanth.ufirewall.donate", "more.shizuku.privileged.api", "ru.bluecat.android.xposed.mods.appsettings", "com.qingyu.rm", "lozn.hookui", "me.jsonet.jshook", "com.zhenxi.jnitrace", "com.zhenxi.fundex2", "com.zhenxi.funelf", "cn.wq.myandroidtools", "ccc71.at.free", "com.sanmer.mrepo", "com.fox2code.mmm", "me.rhunk.snapenhance", "eu.faircode.xlua.pro", "com.berdik.letmedowngrade", "biz.bokhorst.xprivacy", "cn.qssq666.systool", "com.wind.cotter", "player.normal.np", "lozn.godhand");
+    public static final List<String> SU_PATHS = Arrays.asList(
+            "/system/app/superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su",
+            "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su",
+            "/system/bin/failsafe/su", "/data/local/su", "/su/bin/su",
+            "/data/adb/magisk", "/data/adb/ksu", "/data/adb/ap",
+            "/data/adb/modules", "/data/adb/ksud", "/data/adb/apd",
+            "/system/app/Superuser.apk", "/system/app/SuperSU",
+            "/system/etc/init.d", "/system/xbin/daemonsu");
+
+    public static final List<String> ROOT_PACKAGES = Arrays.asList(
+            "io.github.vvb2060.magisk", "io.github.vvb2060.magisk.lit",
+            "com.noshufou.android.su", "com.noshufou.android.su.elite",
+            "eu.chainfire.supersu", "com.koushikdutta.superuser",
+            "com.thirdparty.superuser", "com.yellowes.su",
+            "com.topjohnwu.magisk", "io.github.huskydg.magisk",
+            "me.weishu.kernelsu", "me.bmax.apatch",
+            "com.topjohnwu.magisk.alpha", "com.topjohnwu.magisk.canary",
+            "io.github.vvb2060.magisk.canary");
+
+    public static final List<String> BAD_APPS = Arrays.asList(
+            "com.oasisfeng.greenify", "com.koushikdutta.rommanager",
+            "com.dimonvideo.luckypatcher", "com.chelpus.lackypatch",
+            "com.ramdroid.appquarantine", "eu.faircode.xlua",
+            "org.lsposed.manager", "com.tsng.hidemyapplist",
+            "rikka.appops", "com.guoshi.httpcanary", "com.httpcanary.pro",
+            "com.aistra.hail", "github.tornaco.android.thanos.pro",
+            "com.mrchandler.disableprox", "org.adaway",
+            "dev.ukanth.ufirewall.donate", "more.shizuku.privileged.api",
+            "ru.bluecat.android.xposed.mods.appsettings", "com.qingyu.rm",
+            "lozn.hookui", "me.jsonet.jshook", "com.zhenxi.jnitrace",
+            "com.zhenxi.fundex2", "com.zhenxi.funelf",
+            "cn.wq.myandroidtools", "ccc71.at.free",
+            "com.sanmer.mrepo", "com.fox2code.mmm",
+            "me.rhunk.snapenhance", "eu.faircode.xlua.pro",
+            "com.berdik.letmedowngrade", "biz.bokhorst.xprivacy",
+            "cn.qssq666.systool", "com.wind.cotter",
+            "player.normal.np", "lozn.godhand",
+            "me.weishu.exp", "com.joeykrim.rootcheck",
+            "com.scottyab.rootbeer.sample", "com.devadvance.rootcloak",
+            "com.devadvance.rootcloakplus", "com.zachspong.temprootremovejb",
+            "com.amphoras.hidemyroot", "com.saurik.substrate",
+            "de.robv.android.xposed.installer",
+            "org.meowcat.edxposed.manager", "com.formyhm.hideroot",
+            "me.weishu.kernelsu", "me.bmax.apatch");
     public static final List<String> CLOAK_APPS = Arrays.asList("com.koushikdutta.rommanager", "com.dimonvideo.luckypatcher", "com.chelpus.lackypatch", "com.ramdroid.appquarantine");
 
-    public static final List<String> SU_MANAGERS = Arrays.asList("busybox", "su", "magisk");
-    public static final List<String> SU_PATHS_EX = Arrays.asList("/data/local/", "/data/local/bin/", "/data/local/xbin/", "/sbin/", "/su/bin/", "/system/bin/", "/system/bin/.ext/", "/system/bin/failsafe/", "/system/sd/xbin/", "/system/usr/we-need-root/", "/system/xbin/", "/system/xbin/daemonsu/", "/system/etc/init.d/99SuperSUDaemon/", "/system/bin/.ext/.su/", "/system/etc/.has_su_daemon/", "/system/etc/.installed_su_daemon/", "/cache/", "/data/", "/dev/");
+    public static final List<String> SU_MANAGERS = Arrays.asList("busybox", "su", "magisk", "ksu", "ksud", "apd", "apatch");
+    public static final List<String> SU_PATHS_EX = Arrays.asList(
+            "/data/local/", "/data/local/bin/", "/data/local/xbin/",
+            "/sbin/", "/su/bin/", "/system/bin/", "/system/bin/.ext/",
+            "/system/bin/failsafe/", "/system/sd/xbin/",
+            "/system/usr/we-need-root/", "/system/xbin/",
+            "/system/xbin/daemonsu/", "/system/etc/init.d/99SuperSUDaemon/",
+            "/system/bin/.ext/.su/", "/system/etc/.has_su_daemon/",
+            "/system/etc/.installed_su_daemon/", "/cache/", "/data/", "/dev/",
+            "/data/adb/", "/data/adb/modules/", "/data/adb/ksu/",
+            "/data/adb/ap/");
 
     public static final List<String> NON_WRITABLE_DIRS = Arrays.asList("/system", "/system/bin", "/system/sbin", "/system/xbin", "/vendor/bin", "/sbin", "/etc");
 
@@ -38,7 +88,38 @@ public class Evidence {
     public static final List<String> EMULATOR_FILES = Arrays.asList("init.ranchu.rc", "init.remixos.rc", "init.andy.rc", "ueventd.andy.rc", "bin/genybaseband", "bin/genymotion-vbox-sf", "ueventd.nox.rc", "init.nox.rc", "/system/bin/noxd");
 
     public static final List<String> EMULATOR_PROPS = Arrays.asList("ro.kernel.qemu", "init.svc.qemu-props", "qemu.hw.mainkeys", "qemu.sf.fake_camera", "qemu.sf.lcd_density", "ro.kernel.android.qemud", "qmu.adb.secure", "qemu.gles", "qemu.logcat", "qemu.timezone", "ro.kernel.qemu.encrypt", "ro.kernel.qemu.gles", "ro.kernel.qemu.gltransport", "ro.kernel.qemu.opengles.version", "ro.kernel.qemu.vsync", "ro.kernel.qemu.wifi", "ro.qemu.initrc");
-    public static final List<String> ROOT_PROPS = Arrays.asList("vzw.os.rooted", "magisk", "persist.log.tag.LSPosed", "persist.log.tag.LSPosed-Bridge");//persist.log.tag.LSPosed , persist.log.tag.LSPosed-Bridge
+    public static final List<String> ROOT_PROPS = Arrays.asList(
+            "vzw.os.rooted", "magisk",
+            "persist.log.tag.LSPosed", "persist.log.tag.LSPosed-Bridge",
+            "init.svc.magisk_daemon", "init.svc.magisk_pfs",
+            "persist.magisk.hide", "ro.magisk.disable");
+
+    public static final List<String> PROC_MAPS_ARTIFACTS = Arrays.asList(
+            "magisk", "lspd", "lsposed", "edxposed", "riru",
+            "zygisk", "libmemtrack_real", "libriru", "xposed",
+            "substrate", "frida", "sandhook", "yahfa",
+            "lsplant", "pine", "whale", "epichook");
+
+    public static final List<String> PROC_MOUNT_ARTIFACTS = Arrays.asList(
+            "magisk", "core/mirror", "core/img",
+            "ksu", "apatch", "/sbin/.magisk",
+            "tmpfs /system/", "tmpfs /vendor/",
+            "devpts /dev/pts");
+
+    public static final List<String> PROC_SELF_PATHS = Arrays.asList(
+            "/proc/self/maps", "/proc/self/mounts",
+            "/proc/self/mountinfo", "/proc/self/mountstats",
+            "/proc/self/status", "/proc/self/cmdline",
+            "/proc/mounts");
+
+    public static final Map<String, String> ROOT_PROP_SPOOFS = new HashMap<String, String>() {{
+        put("ro.debuggable", "0");
+        put("ro.secure", "1");
+        put("ro.build.selinux", "0");
+        put("ro.build.tags", "release-keys");
+        put("ro.build.type", "user");
+        put("service.bootanim.exit", "1");
+    }};
 
     public static final List<String> EMULATOR_MANUFACTURER_NAMES = Arrays.asList("unknown", "Genymotion", "AndyOS");
     public static final List<String> EMULATOR_BRAND_NAMES = Arrays.asList("generic", "generic_x86", "Android", "AndyOS");
@@ -47,7 +128,10 @@ public class Evidence {
     public static final List<String> EMULATOR_MODEL_NAMES = Arrays.asList("sdk", "google_sdk", "Android SDK built for x86", "generic");
     public static final List<String> EMULATOR_PRODUCT_NAMES = Arrays.asList("vbox86p", "Genymotion", "Driod4X", "AndyOSX", "remixemu");
 
-    public static final List<String> BAD_STACK_XPOSED = Arrays.asList("xposed", "lsposed", "sandhook", "xlua", "luaj", "lsphooker", "yahfa");
+    public static final List<String> BAD_STACK_XPOSED = Arrays.asList(
+            "xposed", "lsposed", "sandhook", "xlua", "luaj",
+            "lsphooker", "yahfa", "lsplant", "pine", "whale",
+            "edxposed", "substrate", "frida", "epichook");
 
     //public static final String BAD_FILE = "superUserApk";//suFileName
     public static final Map<String, String> DANGEROUS_PROPERTIES = new HashMap<String, String>() {{
@@ -220,5 +304,48 @@ public class Evidence {
             if(SU_MANAGERS.contains(fnLow)) return true;
             return ROOT_PACKAGES.contains(ffLow) || CLOAK_APPS.contains(ffLow) || BAD_APPS.contains(ffLow);
         } return false;
+    }
+
+    public static boolean isProcSelfPath(String path) {
+        if (path == null) return false;
+        String lower = path.toLowerCase();
+        for (String p : PROC_SELF_PATHS)
+            if (lower.contains(p))
+                return true;
+        return false;
+    }
+
+    public static boolean isProcMapsLine(String line) {
+        if (line == null) return false;
+        String lower = line.toLowerCase();
+        for (String artifact : PROC_MAPS_ARTIFACTS)
+            if (lower.contains(artifact))
+                return true;
+        return false;
+    }
+
+    public static boolean isProcMountLine(String line) {
+        if (line == null) return false;
+        String lower = line.toLowerCase();
+        for (String artifact : PROC_MOUNT_ARTIFACTS)
+            if (lower.contains(artifact))
+                return true;
+        return false;
+    }
+
+    public static String spoofRootProperty(String propName) {
+        if (propName == null) return null;
+        return ROOT_PROP_SPOOFS.get(propName);
+    }
+
+    public static boolean isRootProperty(String propName) {
+        if (propName == null) return false;
+        if (ROOT_PROPS.contains(propName)) return true;
+        return ROOT_PROP_SPOOFS.containsKey(propName);
+    }
+
+    public static boolean isEmulatorProperty(String propName) {
+        if (propName == null) return false;
+        return EMULATOR_PROPS.contains(propName);
     }
 }

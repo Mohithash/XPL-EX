@@ -42,6 +42,8 @@ public class VXP extends ContentProvider {
                     " uid=" + android.os.Process.myUid() +
                     " cuid=" + android.os.Binder.getCallingUid());
 
+            XSecurity.checkVxpCaller(getContext(), XCommandBridgeStatic.luaCommandService.getDatabase(getContext()));
+
             return XCommandBridgeStatic.vxpCall(getContext(), arg, extras, method);
             //return XProvider.call(getContext(), arg, extras);
         }
@@ -64,6 +66,8 @@ public class VXP extends ContentProvider {
             Log.i(TAG, "Query " + projection[0].split("\\.")[1] +
                     " uid=" + android.os.Process.myUid() +
                     " cuid=" + android.os.Binder.getCallingUid());
+
+            XSecurity.checkVxpCaller(getContext(), XCommandBridgeStatic.luaCommandService.getDatabase(getContext()));
 
             String[] split = projection[0].split("\\.");
             String method = split[0];

@@ -81,49 +81,43 @@ public class SettingsExActivity extends ListBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         manager.ensureIsOpen(SettingsExActivity.this, PrefManager.SETTINGS_NAMESPACE);
         SettingExFragment fragment = getSettingsFragment();
-        switch (item.getItemId()) {
-            case R.id.menu_show_settings:
-                enumShow show = (fragment == null ? enumShow.none : fragment.getShow());
-                this.menu.findItem(R.id.menu_show_settings_all).setEnabled(show != enumShow.none);
-                this.menu.findItem(R.id.menu_show_settings_unique).setEnabled(show != enumShow.none);
-                this.menu.findItem(R.id.menu_show_settings_android).setEnabled(show != enumShow.none);
-                switch (show) {
-                    case all:
-                        this.menu.findItem(R.id.menu_show_settings_all).setChecked(true);
-                        break;
-                    case unique:
-                        this.menu.findItem(R.id.menu_show_settings_unique).setChecked(true);
-                        break;
-                    case android:
-                        this.menu.findItem(R.id.menu_show_settings_android).setChecked(true);
-                        break;
-                }
-                return true;
-            case R.id.menu_show_settings_unique:
-            case R.id.menu_show_settings_android:
-            case R.id.menu_show_settings_all:
-                item.setChecked(!item.isChecked());
-                final enumShow set;
-                switch (item.getItemId()) {
-                    case R.id.menu_show_settings_unique:
-                        set = enumShow.unique;
-                        break;
-                    case R.id.menu_show_settings_android:
-                        set = enumShow.android;
-                        break;
-                    default:
-                        set = enumShow.all;
-                        break;
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_show_settings) {
+            enumShow show = (fragment == null ? enumShow.none : fragment.getShow());
+            this.menu.findItem(R.id.menu_show_settings_all).setEnabled(show != enumShow.none);
+            this.menu.findItem(R.id.menu_show_settings_unique).setEnabled(show != enumShow.none);
+            this.menu.findItem(R.id.menu_show_settings_android).setEnabled(show != enumShow.none);
+            switch (show) {
+                case all:
+                    this.menu.findItem(R.id.menu_show_settings_all).setChecked(true);
+                    break;
+                case unique:
+                    this.menu.findItem(R.id.menu_show_settings_unique).setChecked(true);
+                    break;
+                case android:
+                    this.menu.findItem(R.id.menu_show_settings_android).setChecked(true);
+                    break;
+            }
+            return true;
+        } else if (itemId == R.id.menu_show_settings_unique || itemId == R.id.menu_show_settings_android || itemId == R.id.menu_show_settings_all) {
+            item.setChecked(!item.isChecked());
+            final enumShow set;
+            if (itemId == R.id.menu_show_settings_unique) {
+                set = enumShow.unique;
+            } else if (itemId == R.id.menu_show_settings_android) {
+                set = enumShow.android;
+            } else {
+                set = enumShow.all;
+            }
 
-                manager.putString(PrefManager.PREFERENCE_SHOW, set.name());
-                fragment.setShow(set);
-                return true;
+            manager.putString(PrefManager.PREFERENCE_SHOW, set.name());
+            fragment.setShow(set);
+            return true;
             //case R.id.menu_help:
             //    menuHelp();
             //    return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

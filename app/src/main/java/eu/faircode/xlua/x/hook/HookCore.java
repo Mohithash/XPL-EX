@@ -74,8 +74,12 @@ public class HookCore {
                             definitions.size(),
                             loadParam.packageName));
 
-                if(definitions.isEmpty())
+                if(definitions.isEmpty()) {
+                    recordDiagnostic(context, app, hook.getObjectId(),
+                            eu.faircode.xlua.x.xlua.hook.HookDiagnosticPacket.STATUS_RESOLVE_FAILED,
+                            "Class [" + hook.getResolvedClassName() + "] Method [" + hook.methodName + "] not found on this device/Android version");
                     continue;
+                }
 
                 for(HookDefinition definition : definitions) {
                     //get time & Compile Script
@@ -164,6 +168,8 @@ public class HookCore {
                             });
                         }catch (Exception e) {
                             Log.e(TAG, "Failed to Deploy ALL Members Hook: " + Str.toStringOrNull(definition) + " Hook:" + hook.getObjectId() + " Error=" + e);
+                            recordDiagnostic(context, app, hook.getObjectId(),
+                                    eu.faircode.xlua.x.xlua.hook.HookDiagnosticPacket.STATUS_INSTALL_FAILED, String.valueOf(e));
                         }
                     }
                     else if(definition instanceof HookDefinitionField) {
@@ -192,6 +198,8 @@ public class HookCore {
                         }catch (Exception e) {
                             XReport.fieldException(context, e, hook, hf.field);
                             Log.e(TAG, "Failed to Invoke Field Hook: " + Str.toStringOrNull(definition) + " Hook:" + hook.getObjectId() + " Error=" + e);
+                            recordDiagnostic(context, app, hook.getObjectId(),
+                                    eu.faircode.xlua.x.xlua.hook.HookDiagnosticPacket.STATUS_INSTALL_FAILED, String.valueOf(e));
                         }
                     }
                     else if(definition instanceof HookDefinitionMember) {
@@ -272,6 +280,8 @@ public class HookCore {
                             }
                         }catch (Exception e) {
                             Log.e(TAG, "Failed To Deploy Hook! Error=" + e + " Hook=" + Str.toStringOrNull(hook));
+                            recordDiagnostic(context, app, hook.getObjectId(),
+                                    eu.faircode.xlua.x.xlua.hook.HookDiagnosticPacket.STATUS_INSTALL_FAILED, String.valueOf(e));
                         }
                     }
                 }
@@ -280,5 +290,19 @@ public class HookCore {
         }catch (Exception e) {
             Log.e(TAG, "Failed to InitHooks! UID=" + uid + " Error=" + e);
         }
+    }
+
+    /**
+     * Persists a hook resolution/install failure so it's queryable later (see
+     * ActivityHookDiagnostics) instead of only existing as a logcat line that
+     * disappears on the next process restart. Swallows its own failures -
+     * diagnostics must never be the reason a hooked app misbehaves.
+     */
+    private static void recordDiagnostic(Context context, PackageHookContext app, String hookId, String status, String reason) {
+        try {
+            eu.faircode.xlua.x.xlua.commands.call.PutHookDiagnosticCommand.call(
+                    context, app.uid, app.packageName,
+                    eu.faircode.xlua.x.xlua.hook.HookDiagnosticPacket.create(hookId, status, reason));
+        } catch (Throwable ignored) { }
     }
 }

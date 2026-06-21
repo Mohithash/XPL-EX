@@ -847,6 +847,11 @@
     <string name="title_privacy_report" translatable="false">Privacy Report</string>
     <string name="msg_privacy_report_empty" translatable="false">No hooks have triggered yet</string>
     <string name="label_report_exception_prefix" translatable="false">Exception:</string>
+    <string name="menu_hook_diagnostics" translatable="false">Hook Diagnostics</string>
+    <string name="title_hook_diagnostics" translatable="false">Hook Diagnostics</string>
+    <string name="msg_hook_diagnostics_empty" translatable="false">No failed hooks recorded yet</string>
+    <string name="label_diagnostic_status_install_failed" translatable="false">INSTALL FAILED</string>
+    <string name="label_diagnostic_status_resolve_failed" translatable="false">NOT AVAILABLE</string>
     <string name="title_fingerprint_profiles" translatable="false">Fingerprint Profiles</string>
     <string name="label_fingerprint_template" translatable="false">Device Template</string>
     <string name="label_fingerprint_profile_name" translatable="false">Profile Name</string>

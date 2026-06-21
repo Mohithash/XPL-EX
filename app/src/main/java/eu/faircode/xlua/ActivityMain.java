@@ -77,6 +77,7 @@ import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.FileDialogUtils;
 import eu.faircode.xlua.x.ui.activities.ActivityFingerprintProfiles;
+import eu.faircode.xlua.x.ui.activities.ActivityHookDiagnostics;
 import eu.faircode.xlua.x.ui.activities.ActivityPrivacyReport;
 import eu.faircode.xlua.x.ui.activities.HooksExActivity;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
@@ -343,6 +344,13 @@ public class ActivityMain extends ActivityBase {
             @Override
             public void onClick(DrawerItem item) {
                 startActivity(new Intent(ActivityMain.this, ActivityPrivacyReport.class));
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_hook_diagnostics, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                startActivity(new Intent(ActivityMain.this, ActivityHookDiagnostics.class));
             }
         }));
 

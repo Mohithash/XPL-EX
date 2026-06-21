@@ -27,6 +27,7 @@ import eu.faircode.xlua.x.xlua.commands.call.InitAssignments;
 import eu.faircode.xlua.x.xlua.commands.call.PutAppProfileCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutAssignmentCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutConfigCommand;
+import eu.faircode.xlua.x.xlua.commands.call.PutHookDiagnosticCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutHookExCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.call.ReportCommand;
@@ -38,6 +39,7 @@ import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksExCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksLegacyCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignmentsCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetConfigsCommand;
+import eu.faircode.xlua.x.xlua.commands.query.GetHookDiagnosticsCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetSettingsExCommand;
 import eu.faircode.xlua.x.xlua.database.wrappers.XLuaDatabaseManager;
@@ -80,6 +82,7 @@ public class GlobalCommandBridge {
                 .registerCall(GetProfileListCommand.class)
 
                 .registerCall(GetAppDirectoriesCommand.class)
+                .registerCall(PutHookDiagnosticCommand.class)
 
                 .registerQuery(GetAppsCommand.class, true)
                 .registerQuery(GetHooksCommand.class, true)
@@ -90,7 +93,8 @@ public class GlobalCommandBridge {
 
                 .registerQuery(GetAssignedHooksExCommand.class, true)
                 .registerQuery(GetAssignedHooksLegacyCommand.class, true)
-                .registerQuery(GetSettingsExCommand.class, true);
+                .registerQuery(GetSettingsExCommand.class, true)
+                .registerQuery(GetHookDiagnosticsCommand.class, true);
 
         //No Mock ones rn
     }

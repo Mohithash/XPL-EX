@@ -848,6 +848,12 @@
     <string name="msg_privacy_report_empty" translatable="false">No hooks have triggered yet</string>
     <string name="label_report_exception_prefix" translatable="false">Exception:</string>
     <string name="menu_hook_diagnostics" translatable="false">Hook Diagnostics</string>
+    <string name="section_hooks_identity" translatable="false">Hooks &amp; Identity</string>
+    <string name="section_diagnostics" translatable="false">Diagnostics</string>
+    <string name="section_backup" translatable="false">Backup</string>
+    <string name="section_app_behavior" translatable="false">App Behavior</string>
+    <string name="section_preferences" translatable="false">Preferences</string>
+    <string name="section_about" translatable="false">About</string>
     <string name="title_hook_diagnostics" translatable="false">Hook Diagnostics</string>
     <string name="msg_hook_diagnostics_empty" translatable="false">No failed hooks recorded yet</string>
     <string name="label_diagnostic_status_install_failed" translatable="false">INSTALL FAILED</string>

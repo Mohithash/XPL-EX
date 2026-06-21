@@ -204,127 +204,8 @@ public class ActivityMain extends ActivityBase {
 
         final ArrayAdapterDrawer drawerArray = new ArrayAdapterDrawer(ActivityMain.this, R.layout.draweritem);
 
-        if (!XposedUtil.isVirtualXposed())
-            drawerArray.add(new DrawerItem(this, R.string.menu_notify_new, notifyNew, new DrawerItem.IListener() {
-                @Override
-                public void onClick(DrawerItem item) {
-                    handleCodeToSnack(PutSettingExCommand.putNotifyNewApps(ActivityMain.this, item.isChecked()), getString(R.string.result_prefix_notify) + "=" + item.isChecked());
-                    drawerArray.notifyDataSetChanged();
-                }
-            }));
-
-        //Remove this for now, how can something like this be implemented ?
-        /*if (!XposedUtil.isVirtualXposed())
-            drawerArray.add(new DrawerItem(this, R.string.menu_restrict_new, restrictNew, new DrawerItem.IListener() {
-                @Override
-                public void onClick(DrawerItem item) {
-                    handleCodeToSnack(PutSettingExCommand.putRestrictNewApps(ActivityMain.this, item.isChecked()), getString(R.string.result_prefix_restrict) + "=" + item.isChecked());
-                    drawerArray.notifyDataSetChanged();
-                }
-            }));*/
-
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_readme, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX"));
-                if (browse.resolveActivity(getPackageManager()) == null)
-                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
-                else
-                    startActivity(browse);
-            }
-        }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_faq, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/blob/master/FAQ.md"));
-                if (browse.resolveActivity(getPackageManager()) == null)
-                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
-                else
-                    startActivity(browse);
-            }
-        }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_donate, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/?tab=readme-ov-file#donations"));
-                if (browse.resolveActivity(getPackageManager()) == null)
-                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
-                else
-                    startActivity(browse);
-            }
-        }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_whats_new_button, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                whatsNew();
-            }
-        }));
-
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_collections, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                new CollectionsDialog()
-                        .set(ActivityMain.this)
-                        .setOnDialogCloseListener(() -> { if(fragmentMain != null) fragmentMain.loadData(); })
-                        .show(getSupportFragmentManager(), getString(R.string.menu_collections));
-            }
-        }));
-
-        if (!XposedUtil.isVirtualXposed())
-            drawerArray.add(new DrawerItem(this,R.string.menu_dark, isDark, new DrawerItem.IListener() {
-                @Override
-                public void onClick(DrawerItem item) {
-                    String oldTheme = GetSettingExCommand.getTheme(ActivityMain.this, Process.myUid());
-                    String newTheme = item.isChecked() ? "dark" : "light";
-
-                    A_CODE code = PutSettingExCommand.putTheme(ActivityMain.this, newTheme);
-                    drawerArray.notifyDataSetChanged();
-                    handleCodeToSnack(code, getString(R.string.result_prefix_theme) + "=" + newTheme);
-
-                    if(A_CODE.isSuccessful(code)) {
-                        if(!oldTheme.equals(newTheme)) {
-                            setTheme(GetSettingExCommand.SETTING_THEME_DEFAULT.equals(newTheme) ? R.style.AppThemeDark : R.style.AppThemeLight);
-                            recreate();
-                        }
-                    }
-                }
-            }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_debug_logs, isVerbose, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                boolean isChecked = item.isChecked();
-                DebugUtil.setForceDebug(isChecked);
-                handleCodeToSnack(PutSettingExCommand.putVerboseLogging(ActivityMain.this, isChecked),  getString(R.string.result_prefix_debug) + "=" + isChecked);
-                drawerArray.notifyDataSetChanged();
-            }
-        }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_force_english, forceEnglish, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                boolean oldFlag = getIsForceEnglish();
-                boolean newFlag = item.isChecked();
-                setForceEnglish(newFlag);
-                drawerArray.notifyDataSetChanged();//fix context issues
-                if(oldFlag != forceEnglish) {
-                    recreate();
-                }
-            }
-        }));
-
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_settings, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                menuSettings();
-            }
-        }));
+        // --- Hooks & Identity ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_hooks_identity));
 
         drawerArray.add(new DrawerItem(this, R.string.menu_hooks, new DrawerItem.IListener() {
             @Override
@@ -340,6 +221,16 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        drawerArray.add(new DrawerItem(this, R.string.menu_settings, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                menuSettings();
+            }
+        }));
+
+        // --- Diagnostics ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_diagnostics));
+
         drawerArray.add(new DrawerItem(this, R.string.menu_privacy_report, new DrawerItem.IListener() {
             @Override
             public void onClick(DrawerItem item) {
@@ -354,8 +245,19 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        drawerArray.add(new DrawerItem(this, R.string.menu_debug_logs, isVerbose, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                boolean isChecked = item.isChecked();
+                DebugUtil.setForceDebug(isChecked);
+                handleCodeToSnack(PutSettingExCommand.putVerboseLogging(ActivityMain.this, isChecked),  getString(R.string.result_prefix_debug) + "=" + isChecked);
+                drawerArray.notifyDataSetChanged();
+            }
+        }));
 
-        // Add after other drawer items
+        // --- Backup ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_backup));
+
         drawerArray.add(new DrawerItem(this, R.string.menu_import_settings, new DrawerItem.IListener() {
             @Override
             public void onClick(DrawerItem item) {
@@ -394,6 +296,116 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        // --- App Behavior ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_app_behavior));
+
+        if (!XposedUtil.isVirtualXposed())
+            drawerArray.add(new DrawerItem(this, R.string.menu_notify_new, notifyNew, new DrawerItem.IListener() {
+                @Override
+                public void onClick(DrawerItem item) {
+                    handleCodeToSnack(PutSettingExCommand.putNotifyNewApps(ActivityMain.this, item.isChecked()), getString(R.string.result_prefix_notify) + "=" + item.isChecked());
+                    drawerArray.notifyDataSetChanged();
+                }
+            }));
+
+        //Remove this for now, how can something like this be implemented ?
+        /*if (!XposedUtil.isVirtualXposed())
+            drawerArray.add(new DrawerItem(this, R.string.menu_restrict_new, restrictNew, new DrawerItem.IListener() {
+                @Override
+                public void onClick(DrawerItem item) {
+                    handleCodeToSnack(PutSettingExCommand.putRestrictNewApps(ActivityMain.this, item.isChecked()), getString(R.string.result_prefix_restrict) + "=" + item.isChecked());
+                    drawerArray.notifyDataSetChanged();
+                }
+            }));*/
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_collections, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                new CollectionsDialog()
+                        .set(ActivityMain.this)
+                        .setOnDialogCloseListener(() -> { if(fragmentMain != null) fragmentMain.loadData(); })
+                        .show(getSupportFragmentManager(), getString(R.string.menu_collections));
+            }
+        }));
+
+        // --- Preferences ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_preferences));
+
+        if (!XposedUtil.isVirtualXposed())
+            drawerArray.add(new DrawerItem(this,R.string.menu_dark, isDark, new DrawerItem.IListener() {
+                @Override
+                public void onClick(DrawerItem item) {
+                    String oldTheme = GetSettingExCommand.getTheme(ActivityMain.this, Process.myUid());
+                    String newTheme = item.isChecked() ? "dark" : "light";
+
+                    A_CODE code = PutSettingExCommand.putTheme(ActivityMain.this, newTheme);
+                    drawerArray.notifyDataSetChanged();
+                    handleCodeToSnack(code, getString(R.string.result_prefix_theme) + "=" + newTheme);
+
+                    if(A_CODE.isSuccessful(code)) {
+                        if(!oldTheme.equals(newTheme)) {
+                            setTheme(GetSettingExCommand.SETTING_THEME_DEFAULT.equals(newTheme) ? R.style.AppThemeDark : R.style.AppThemeLight);
+                            recreate();
+                        }
+                    }
+                }
+            }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_force_english, forceEnglish, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                boolean oldFlag = getIsForceEnglish();
+                boolean newFlag = item.isChecked();
+                setForceEnglish(newFlag);
+                drawerArray.notifyDataSetChanged();//fix context issues
+                if(oldFlag != forceEnglish) {
+                    recreate();
+                }
+            }
+        }));
+
+        // --- About ---
+        drawerArray.add(DrawerItem.header(this, R.string.section_about));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_whats_new_button, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                whatsNew();
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_readme, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX"));
+                if (browse.resolveActivity(getPackageManager()) == null)
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
+                else
+                    startActivity(browse);
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_faq, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/blob/master/FAQ.md"));
+                if (browse.resolveActivity(getPackageManager()) == null)
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
+                else
+                    startActivity(browse);
+            }
+        }));
+
+        drawerArray.add(new DrawerItem(this, R.string.menu_donate, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/?tab=readme-ov-file#donations"));
+                if (browse.resolveActivity(getPackageManager()) == null)
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
+                else
+                    startActivity(browse);
+            }
+        }));
 
         drawerList.setAdapter(drawerArray);
         //whatsNew
@@ -866,6 +878,7 @@ public class ActivityMain extends ActivityBase {
         private final String title;
         private final boolean checkable;
         private boolean checked;
+        private final boolean header;
         private final IListener listener;
 
         DrawerItem(Context context, int title, IListener listener) {
@@ -873,7 +886,22 @@ public class ActivityMain extends ActivityBase {
             this.title = context.getString(title);
             this.checkable = false;
             this.checked = false;
+            this.header = false;
             this.listener = listener;
+        }
+
+        /** Section header: non-clickable, non-checkable, rendered as a label. */
+        static DrawerItem header(Context context, int title) {
+            return new DrawerItem(context, title, true);
+        }
+
+        private DrawerItem(Context context, int title, boolean isHeader) {
+            this.id = title;
+            this.title = context.getString(title);
+            this.checkable = false;
+            this.checked = false;
+            this.header = isHeader;
+            this.listener = null;
         }
 
         DrawerItem(Context context, int title, boolean checked, IListener listener) {
@@ -881,6 +909,7 @@ public class ActivityMain extends ActivityBase {
             this.title = context.getString(title);
             this.checkable = true;
             this.checked = checked;
+            this.header = false;
             this.listener = listener;
         }
 
@@ -892,6 +921,10 @@ public class ActivityMain extends ActivityBase {
             return this.title;
         }
 
+        boolean isHeader() {
+            return this.header;
+        }
+
         boolean isCheckable() {
             return this.checkable;
         }
@@ -901,6 +934,8 @@ public class ActivityMain extends ActivityBase {
         }
 
         void onClick() {
+            if (this.header)
+                return;
             if (this.checkable)
                 this.checked = !this.checked;
             if (this.listener != null)
@@ -937,7 +972,28 @@ public class ActivityMain extends ActivityBase {
             cb.setVisibility(item.isCheckable() ? View.VISIBLE : View.GONE);
             cb.setChecked(item.isChecked());
 
+            if (item.isHeader()) {
+                tv.setTypeface(null, android.graphics.Typeface.BOLD);
+                tv.setAlpha(0.6f);
+                tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 13f);
+                row.setEnabled(false);
+            } else {
+                tv.setTypeface(null, android.graphics.Typeface.NORMAL);
+                tv.setAlpha(1f);
+                tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f);
+                row.setEnabled(true);
+            }
+
             return row;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() { return false; }
+
+        @Override
+        public boolean isEnabled(int position) {
+            DrawerItem item = getItem(position);
+            return item != null && !item.isHeader();
         }
     }
 }
